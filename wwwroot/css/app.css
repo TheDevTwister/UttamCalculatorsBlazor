@@ -11,9 +11,9 @@
     transform: translate(-50%, -50%);
 }
 
-.logo-link {
+/*.logo-link {
     background-color: var(--mud-palette-appbar-background);
-} 
+} */
 .logo-img {
     max-width:170px;
     max-height:60px;

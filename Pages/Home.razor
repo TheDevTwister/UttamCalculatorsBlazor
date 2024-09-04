@@ -1,8 +1,10 @@
 ﻿@page "/"
 
-<PageTitle>Dashboard</PageTitle>
+<PageTitle></PageTitle>
 
-<MudText Typo="Typo.h6"><img src="/logo.png" class="logo-img" /> is @Text</MudText>
+<h1 class="mb-5">Uttam Calculators</h1>
+
+@* <MudText Typo="Typo.h6"><img src="/logo.png" class="logo-img" /> is @Text</MudText>
 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ButtonOnClick">@ButtonText</MudButton>
 @code {
     public string Text { get; set; } = "????";
@@ -15,4 +17,4 @@
         Text = $"Awesome x {ButtonClicked}";
         ButtonText = "Click Me Again";
     }
-}
+} *@

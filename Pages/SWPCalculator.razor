@@ -2,4 +2,142 @@
 
 <PageTitle>SWP Calculator</PageTitle>
 
-<h1>SWP Calculator</h1>
+<h1 class="mb-5">SWP Calculator</h1>
+
+<MudGrid>
+    <MudItem xs="12" md="4">
+        <MudTextField @bind-Value="_initialInvestment" Label="Initial Investment (₹)" Type="Numeric" Required Class="mb-1" AutoFocus="true" />
+        <MudTextField @bind-Value="_annualRate" Label="Annual Interest Rate (%)" Type="Numeric" Required Class="mb-1" />        
+        <MudTextField @bind-Value="_duration" Label="Investment Duration (Years)" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="_withdrawalAmount" Label="Monthly Withdrawal Amount (₹)" Type="Numeric" Required Class="mb-1" />
+
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" OnClick="CalculateSWP" Class="mt-2">Calculate</MudButton>
+    </MudItem>
+
+    <MudItem xs="12" md="8">
+        <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+            <MudTabPanel Text="Results">
+                <MudText>
+                    @((MarkupString)_resultHtml)
+                </MudText>
+            </MudTabPanel>
+            <MudTabPanel Text="Yearly Report">
+                @if (_report != null && _report.Count > 0)
+                {
+                    <MudTable Dense="true" Items="_report" T="ReportRow">
+                        <HeaderContent>
+                            <MudTh>Year</MudTh>
+                            <MudTh>Start Balance (₹)</MudTh>
+                            <MudTh>Total Withdrawals (₹)</MudTh>
+                            <MudTh>Interest Earned (₹)</MudTh>
+                            <MudTh>End of Year Balance (₹)</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="Year">@context.Year</MudTd>
+                            <MudTd DataLabel="Start Balance">₹@ConvertToIndianNumberFormat(context.StartBalance)</MudTd>
+                            <MudTd DataLabel="Total Withdrawals">₹@ConvertToIndianNumberFormat(context.TotalWithdrawals)</MudTd>
+                            <MudTd DataLabel="Interest Earned">₹@ConvertToIndianNumberFormat(context.InterestEarned)</MudTd>
+                            <MudTd DataLabel="End of Year Balance">₹@ConvertToIndianNumberFormat(context.EndBalance)</MudTd>
+                        </RowTemplate>
+                        <NoRecordsContent>
+                            <MudTd colspan="5">
+                                No data available.
+                            </MudTd>
+                        </NoRecordsContent>
+                    </MudTable>
+                }
+                else
+                {
+                    <MudText>No data to display.</MudText>
+                }
+            </MudTabPanel>
+        </MudTabs>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private double? _initialInvestment;
+    private double? _annualRate;
+    private double? _withdrawalAmount;
+    private int? _duration;
+    private string _resultHtml;
+    private List<ReportRow> _report = new();
+
+    private class ReportRow
+    {
+        public int Year { get; set; }
+        public double StartBalance { get; set; }
+        public double TotalWithdrawals { get; set; }
+        public double InterestEarned { get; set; }
+        public double EndBalance { get; set; }
+    }
+
+    private void CalculateSWP()
+    {
+        if (_initialInvestment == null || _annualRate == null || _withdrawalAmount == null || _duration == null)
+        {
+            _resultHtml = "Please fill in all required fields.";
+            return;
+        }
+
+        double initialInvestment = _initialInvestment.Value;
+        double annualRate = _annualRate.Value;
+        double monthlyWithdrawal = _withdrawalAmount.Value;
+        int years = _duration.Value;
+
+        double r = (annualRate / 100) / 12;
+        double currentBalance = initialInvestment;
+        double totalWithdrawals = 0;
+        _report.Clear();
+
+        for (int year = 1; year <= years; year++)
+        {
+            double startBalance = currentBalance;
+            double interestEarned = 0;
+            double yearWithdrawals = 0;
+
+            for (int month = 1; month <= 12; month++)
+            {
+                if (currentBalance <= 0) break;
+
+                interestEarned += currentBalance * r;
+                currentBalance += currentBalance * r;
+
+                if (currentBalance >= monthlyWithdrawal)
+                {
+                    currentBalance -= monthlyWithdrawal;
+                    yearWithdrawals += monthlyWithdrawal;
+                    totalWithdrawals += monthlyWithdrawal;
+                }
+                else
+                {
+                    yearWithdrawals += currentBalance;
+                    totalWithdrawals += currentBalance;
+                    currentBalance = 0;
+                    break;
+                }
+            }
+
+            _report.Add(new ReportRow
+                {
+                    Year = year,
+                    StartBalance = startBalance,
+                    TotalWithdrawals = yearWithdrawals,
+                    InterestEarned = interestEarned,
+                    EndBalance = currentBalance
+                });
+
+            if (currentBalance <= 0) break;
+        }
+
+        _resultHtml = currentBalance > 0
+            ? $"Your investment will last {years} years.<br>Ending Balance: ₹{ConvertToIndianNumberFormat(currentBalance)}<br>Total Withdrawals: ₹{ConvertToIndianNumberFormat(totalWithdrawals)}"
+            : $"Your investment will be depleted in {_report.Count} years.<br>Total Withdrawals: ₹{ConvertToIndianNumberFormat(totalWithdrawals)}";
+    }
+
+    // Helper function to format numbers in the Indian numbering system
+    private string ConvertToIndianNumberFormat(double number)
+    {
+        return string.Format(new System.Globalization.CultureInfo("en-IN"), "{0:N2}", number);
+    }
+}

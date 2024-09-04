@@ -2,4 +2,103 @@
 
 <PageTitle>LumpSum Calculator</PageTitle>
 
-<h1>LumpSum Calculator</h1>
+<h1 class="mb-5">LumpSum Calculator</h1>
+
+<MudGrid>
+    <MudItem xs="12" md="4">
+        <MudTextField @bind-Value="_lumpSum" Label="Lump Sum Amount (₹)" Type="Numeric" Required Class="mb-1" AutoFocus="true" />
+        <MudTextField @bind-Value="_annualRate" Label="Annual Interest Rate (%)" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="_duration" Label="Investment Duration (Years)" Type="Numeric" Required Class="mb-1" />
+
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" OnClick="CalculateLumpSum" Class="mt-2">Calculate</MudButton>
+    </MudItem>
+
+    <MudItem xs="12" md="8">
+        <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+            <MudTabPanel Text="Results">
+                <MudText>
+                    @((MarkupString)_resultHtml)
+                </MudText>
+            </MudTabPanel>
+            <MudTabPanel Text="Yearly Report">
+                <MudTable Dense="true" Items="_report" T="ReportRow">
+                    <HeaderContent>
+                        <MudTh>Year</MudTh>
+                        <MudTh>Total Deposit (₹)</MudTh>
+                        <MudTh>Interest Earned (₹)</MudTh>
+                        <MudTh>End of Year Balance (₹)</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Year">@context.Year</MudTd>
+                        <MudTd DataLabel="Total Deposit">₹@ConvertToIndianNumberFormat(context.TotalDeposit)</MudTd>
+                        <MudTd DataLabel="Interest Earned">₹@ConvertToIndianNumberFormat(context.InterestEarned)</MudTd>
+                        <MudTd DataLabel="End of Year Balance">₹@ConvertToIndianNumberFormat(context.EndOfYearBalance)</MudTd>
+                    </RowTemplate>
+                    <NoRecordsContent>
+                        <MudTd colspan="4">
+                            No data available.
+                        </MudTd>
+                    </NoRecordsContent>
+                </MudTable>
+            </MudTabPanel>
+        </MudTabs>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private double? _lumpSum;
+    private double? _annualRate;
+    private int? _duration;
+    private string _resultHtml;
+    private List<ReportRow> _report = new();
+
+    private class ReportRow
+    {
+        public int Year { get; set; }
+        public double TotalDeposit { get; set; }
+        public double InterestEarned { get; set; }
+        public double EndOfYearBalance { get; set; }
+    }
+
+    private void CalculateLumpSum()
+    {
+        if (_lumpSum == null || _annualRate == null || _duration == null)
+        {
+            _resultHtml = "Please fill in all required fields.";
+            return;
+        }
+
+        double lumpSum = _lumpSum.Value;
+        double annualRate = _annualRate.Value;
+        int years = _duration.Value;
+
+        double r = (annualRate / 100);
+        double maturityAmount = lumpSum * Math.Pow(1 + r, years);
+
+        _resultHtml = $@"
+            Maturity Amount: ₹{ConvertToIndianNumberFormat(maturityAmount)}<br>
+        ";
+
+        _report.Clear();
+        double accumulatedAmount = lumpSum;
+        for (int year = 1; year <= years; year++)
+        {
+            double interestEarned = accumulatedAmount * r;
+            accumulatedAmount += interestEarned;
+
+            _report.Add(new ReportRow
+                {
+                    Year = year,
+                    TotalDeposit = lumpSum,
+                    InterestEarned = interestEarned,
+                    EndOfYearBalance = accumulatedAmount
+                });
+        }
+    }
+
+    // Helper function to format numbers in the Indian numbering system
+    private string ConvertToIndianNumberFormat(double number)
+    {
+        return string.Format(new System.Globalization.CultureInfo("en-IN"), "{0:N2}", number);
+    }
+}
