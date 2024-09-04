@@ -1,4 +1,16 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿<MudNavMenu>
+    <a href="/" class="mud-toolbar mud-toolbar-gutters mud-toolbar-appbar logo-link">
+        <img src="/logo.png" class="logo-img" />
+    </a>
+    
+    <MudNavLink Href="/SIPCalculator" Match="NavLinkMatch.Prefix">SIPCalculator</MudNavLink>
+    <MudNavGroup Title="Calculators">
+        <MudNavLink Href="/SWPCalculator" Match="NavLinkMatch.Prefix">SWPCalculator</MudNavLink>
+    </MudNavGroup>
+    <MudNavLink Href="/LumpSumCalculator" Match="NavLinkMatch.Prefix">LumpSumCalculator</MudNavLink>
+</MudNavMenu>
+
+@* <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="/">Uttam Calculators</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -9,11 +21,6 @@
 
 <div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
     <nav class="flex-column">
-        @* <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div> *@
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="/SIPCalculator">
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> SIP Calculator
@@ -28,7 +35,7 @@
             <NavLink class="nav-link" href="/SWPCalculator">
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> SWP Calculator
             </NavLink>
-        </div>        
+        </div>
     </nav>
 </div>
 
@@ -41,4 +48,4 @@
     {
         collapseNavMenu = !collapseNavMenu;
     }
-}
+} *@

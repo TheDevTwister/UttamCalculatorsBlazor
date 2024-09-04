@@ -1,5 +1,40 @@
 ﻿@inherits LayoutComponentBase
-<div class="page">
+
+@* Required *@
+<MudThemeProvider />
+<MudPopoverProvider />
+@* Needed for dialogs *@
+<MudDialogProvider />
+@* Needed for snackbars *@
+<MudSnackbarProvider />
+
+
+
+<MudLayout>
+    <MudAppBar>
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        
+    </MudAppBar>
+    <MudDrawer @bind-Open="@_drawerOpen">
+        <NavMenu />
+    </MudDrawer>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.Medium">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    bool _drawerOpen = true;
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+}
+
+@* <div class="page">
     <div class="sidebar">
         <NavMenu />
     </div>
@@ -14,3 +49,4 @@
         </article>
     </main>
 </div>
+ *@
