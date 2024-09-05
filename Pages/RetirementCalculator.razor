@@ -219,7 +219,7 @@
     private int? CurrentSavingsAmount = 0;
     private int? CurrentMonthlyInvestments = 10000;
     private int StepUp = 7;
-    private int? PostRetirementMonthlyAmount = 80000;
+    private int? PostRetirementMonthlyAmount = 110000;
     private int Inflation = 7;
 
 
@@ -315,54 +315,69 @@
         // Initialize the starting variables
         int currentYear = CurrentAge;
         double startingSaving = CurrentSavingsAmount ?? 0;
-        double additionalSavings = (CurrentMonthlyInvestments * 12) ?? 0;
-        double inflationFactor = 1 + (Inflation / 100.0);
-        double postRetirementExpenses = PostRetirementMonthlyAmount ?? 0;
+        double additionalSavings = (CurrentMonthlyInvestments * 12) ?? 0;  // Annualized savings
+        double inflationRate = Inflation / 100.0;
+        double inflationFactor = 1 + inflationRate;
+        double postRetirementMonthlyAmount = PostRetirementMonthlyAmount ?? 0;
         bool isRetired = false;
+
+        // Calculate the pre-retirement expenses adjustment factor
+        double preRetirementExpenseAdjustment = postRetirementMonthlyAmount * Math.Pow(inflationFactor, (RetirementAge - CurrentAge)) * 12;
+
+        // Sum of returns share from current savings and retirement savings approach
+        double sumOfReturnsShare = CSSumOfReturnsShare ?? 0;
+        double retirementSumOfReturnsShare = RSSumOfReturnsShare ?? 0;
+
+        // Initialize planned expenses
+        double plannedExpenses = 0;
 
         // Loop through each year starting from CurrentAge up to ExpensesPlannedAge
         for (int age = CurrentAge; age <= ExpensesPlannedAge; age++)
         {
-            // Apply the step-up percentage for savings
-            if (age > CurrentAge)
+            // Apply the step-up percentage for savings (before retirement)
+            if (age > CurrentAge && !isRetired)
             {
                 additionalSavings += additionalSavings * (StepUp / 100.0);
             }
 
-            // Calculate retirement expenses adjusted by inflation
+            // Determine if the person is retired
             if (age >= RetirementAge)
             {
                 isRetired = true;
-                postRetirementExpenses *= inflationFactor;  // Adjust for inflation
+
+                // For post-retirement, expenses increase with inflation
+                if (age == RetirementAge)
+                {
+                    // Use the pre-retirement expense adjustment for the first year of retirement
+                    plannedExpenses = preRetirementExpenseAdjustment;
+                }
+                else
+                {
+                    // Expenses continue to increase with inflation after retirement
+                    plannedExpenses *= inflationFactor;
+                }
+            }
+            else
+            {
+                // Pre-retirement planned expenses are 0
+                plannedExpenses = 0;
             }
 
-            // Calculate planned expenses for each year
-            double plannedExpenses = isRetired ? postRetirementExpenses * 12 : 0;  // Annual post-retirement expenses
-
-            additionalSavings = isRetired ? 0 : additionalSavings;
-
-
             // Calculate returns on the current savings
-            double returnsOnSavings = startingSaving * (isRetired ? RSSumOfTaxShare.Value : RSSumOfReturnsShare.Value) / 100;
+            double returnsOnSavings = startingSaving * (isRetired ? retirementSumOfReturnsShare : sumOfReturnsShare) / 100;
+
+            // After retirement, additional savings should be 0
+            additionalSavings = isRetired ? 0 : additionalSavings;
 
             // Calculate ending savings: Starting savings + returns + additional savings - planned expenses
             double endingSavings = startingSaving + returnsOnSavings + additionalSavings - plannedExpenses;
-
-            if (isRetired)
-            {
-                returnsOnSavings = startingSaving * (RSSumOfReturnsShare.Value / 100);
-                endingSavings = startingSaving + returnsOnSavings + additionalSavings - plannedExpenses;
-            }
-
-            // // Calculate ending savings for the year
-            // double endingSavings = startingSaving + additionalSavings - plannedExpenses;
 
             // Handle cases where savings run out
             string warning = null;
             if (endingSavings < 0)
             {
                 warning = "Warning: Savings depleted";
-                endingSavings = 0;
+                //endingSavings = 0;
             }
 
             // Determine the status: "Earning" or "Retired"
@@ -386,6 +401,8 @@
             startingSaving = endingSavings;
         }
     }
+
+
 
     private string ConvertToIndianNumberFormat(double? number)
     {
