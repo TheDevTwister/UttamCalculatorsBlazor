@@ -11,14 +11,14 @@
     <MudItem xs="12" md="4">
 
         <!-- Inputs with labels populated from C# variables -->
-        <MudTextField @bind-Value="CurrentAge" Label="Current Age" Type="Numeric" Required Class="mb-1" AutoFocus="true" OnBlur="CalculateRetirementPlan" />
-        <MudTextField @bind-Value="RetirementAge" Label="Retirement Age" Type="Numeric" Required Class="mb-1" OnBlur="CalculateRetirementPlan" />
-        <MudTextField @bind-Value="ExpensesPlannedAge" Label="Expenses planned until age" Type="Numeric" Required Class="mb-1" OnBlur="CalculateRetirementPlan" />
-        <MudTextField @bind-Value="CurrentSavingsAmount" Label="Current Savings Amount" Type="Numeric" Required Class="mb-1" OnBlur="CalculateRetirementPlan" />
-        <MudTextField @bind-Value="CurrentMonthlyInvestments" Label="Current Monthly Investments" Type="Numeric" Required Class="mb-1" OnBlur="CalculateRetirementPlan" />
-        <MudTextField @bind-Value="StepUp" Label="Step-up in savings every yr" Type="Numeric" Required Class="mb-1" OnBlur="CalculateRetirementPlan" />
-        <MudTextField @bind-Value="PostRetirementMonthlyAmount" Label="Post-retirement monthly amount (today's rate)" Type="Numeric" Required Class="mb-1" OnBlur="CalculateRetirementPlan" />
-        <MudTextField @bind-Value="Inflation" Label="Inflation" Type="Numeric" Required Class="mb-1" OnBlur="CalculateRetirementPlan" />
+        <MudTextField @bind-Value="CurrentAge" Label="Current Age" Type="Numeric" Required Class="mb-1" AutoFocus="true" />
+        <MudTextField @bind-Value="RetirementAge" Label="Retirement Age" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="ExpensesPlannedAge" Label="Expenses planned until age" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="CurrentSavingsAmount" Label="Current Savings Amount" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="CurrentMonthlyInvestments" Label="Current Monthly Investments" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="StepUp" Label="Step-up in savings every yr" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="PostRetirementMonthlyAmount" Label="Post-retirement monthly amount (today's rate)" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="Inflation" Label="Inflation" Type="Numeric" Required Class="mb-1" />
     </MudItem>
     <MudItem xs="12" md="4">
         <MudText Typo="Typo.h6">Current Savings - Investment Approach</MudText>
