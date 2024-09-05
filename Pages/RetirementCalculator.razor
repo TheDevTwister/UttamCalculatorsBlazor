@@ -3,3 +3,672 @@
 <PageTitle>Retirement Calculator</PageTitle>
 
 <h1>Retirement Calculator</h1>
+
+
+
+<MudGrid>
+    <!-- First Section -->
+    <MudItem xs="12" md="4">
+
+        <!-- Inputs with labels populated from C# variables -->
+        <MudTextField @bind-Value="CurrentAge" Label="Current Age" Type="Numeric" Required Class="mb-1" AutoFocus="true" />
+        <MudTextField @bind-Value="RetirementAge" Label="Retirement Age" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="ExpensesPlannedAge" Label="Expenses planned until age" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="CurrentSavingsAmount" Label="Current Savings Amount" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="CurrentMonthlyInvestments" Label="Current Monthly Investments" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="StepUp" Label="Step-up in savings every yr" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="PostRetirementMonthlyAmount" Label="Post-retirement monthly amount (today's rate)" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="Inflation" Label="Inflation" Type="Numeric" Required Class="mb-1" />
+
+    </MudItem>
+    <MudItem xs="12" md="4">
+        <MudText Typo="Typo.h6">Current Savings - Investment Approach</MudText>
+
+        <!-- Subsection: Fixed Returns -->
+        <MudText Typo="Typo.h6">Fixed Returns</MudText>
+        <MudGrid>
+            <MudItem xs="4" md="4">
+                <MudTextField @bind-Value="CSFRReturns" Label="Returns" Type="Numeric" Required Class="mb-1" OnBlur="CalculateSumPercentOfSavings" />
+            </MudItem>
+            <MudItem xs="4" md="4">
+                <MudTextField @bind-Value="CSFRTax" Label="Tax" Type="Numeric" Required Class="mb-1" OnBlur="CalculateSumPercentOfSavings" />
+            </MudItem>
+            <MudItem xs="4" md="4">
+                <MudTextField @bind-Value="CSFRShare" Label="Share" Type="Numeric" Required Class="mb-1" OnBlur="CalculateSumPercentOfSavings" />
+            </MudItem>
+        </MudGrid>
+
+
+        <!-- Subsection: Large Cap Mutual Funds -->
+        <MudText Typo="Typo.h6">Large Cap Mutual Funds</MudText>
+        <MudGrid>
+            <MudItem xs="4" md="4">
+                <MudTextField @bind-Value="CSLCMFReturns" Label="Returns" Type="Numeric" Required Class="mb-1" OnBlur="CalculateSumPercentOfSavings" />
+            </MudItem>
+            <MudItem xs="4" md="4">
+                <MudTextField @bind-Value="CSLCMFTax" Label="Tax" Type="Numeric" Required Class="mb-1" OnBlur="CalculateSumPercentOfSavings" />
+            </MudItem>
+            <MudItem xs="4" md="4">
+                <MudTextField @bind-Value="CSLCMFShare" Label="Share" Type="Numeric" Required Class="mb-1" OnBlur="CalculateSumPercentOfSavings" />
+            </MudItem>
+        </MudGrid>
+
+        <!-- Subsection: Midcap Mutual Funds -->
+        <MudText Typo="Typo.h6">Midcap Mutual Funds</MudText>
+        <MudGrid>
+            <MudItem xs="4" md="4">
+                <MudTextField @bind-Value="CSMCMFReturns" Label="Returns" Type="Numeric" Required Class="mb-1" OnBlur="CalculateSumPercentOfSavings" />
+            </MudItem>
+            <MudItem xs="4" md="4">
+                <MudTextField @bind-Value="CSMCMFTax" Label="Tax" Type="Numeric" Required Class="mb-1" OnBlur="CalculateSumPercentOfSavings" />
+            </MudItem>
+            <MudItem xs="4" md="4">
+                <MudTextField @bind-Value="CSMCMFShare" Label="Share" Type="Numeric" Required Class="mb-1" OnBlur="CalculateSumPercentOfSavings" />
+            </MudItem>
+        </MudGrid>
+
+        <!-- Subsection: Smallcap Mutual Funds -->
+        <MudText Typo="Typo.h6">Smallcap Mutual Funds</MudText>
+        <MudGrid>
+            <MudItem xs="4" md="4">
+                <MudTextField @bind-Value="CSSCMFReturns" Label="Returns" Type="Numeric" Required Class="mb-1" OnBlur="CalculateSumPercentOfSavings" />
+            </MudItem>
+            <MudItem xs="4" md="4">
+                <MudTextField @bind-Value="CSSCMFTax" Label="Tax" Type="Numeric" Required Class="mb-1" OnBlur="CalculateSumPercentOfSavings" />
+            </MudItem>
+            <MudItem xs="4" md="4">
+                <MudTextField @bind-Value="CSSCMFShare" Label="Share" Type="Numeric" Required Class="mb-1" OnBlur="CalculateSumPercentOfSavings" />
+            </MudItem>
+        </MudGrid>
+
+        <!-- Calculated labels (d12, e12, f12) -->
+        <MudText Typo="Typo.h6">Calculated Values</MudText>
+        <MudGrid>
+            <MudItem xs="4" md="4">
+                <MudText title="Sum Of Returns Share">@ConvertToIndianNumberFormat(CSSumOfReturnsShare)%</MudText>
+            </MudItem>
+            <MudItem xs="4" md="4">
+                <MudText title="Sum Of Tax Share">@ConvertToIndianNumberFormat(CSSumOfTaxShare)%</MudText>
+            </MudItem>
+            <MudItem xs="4" md="4">
+                <MudText title="Sum Of Diversification">@ConvertToIndianNumberFormat(CSSumOfDiversification)%</MudText>
+            </MudItem>
+        </MudGrid>
+
+
+
+
+    </MudItem>
+    <MudItem xs="12" md="4">
+        <MudText Typo="Typo.h6">Retirement Savings - Investment Approach</MudText>
+
+        <!-- Subsection: Fixed Returns -->
+        <MudText Typo="Typo.h6">Fixed Returns</MudText>
+        <MudGrid>
+            <MudItem xs="4" md="4">
+                <MudTextField @bind-Value="RSFRReturns" Label="Returns" Type="Numeric" Required Class="mb-1" OnBlur="CalculateSumPercentOfSavings" />
+            </MudItem>
+            <MudItem xs="4" md="4">
+                <MudTextField @bind-Value="RSFRTax" Label="Tax" Type="Numeric" Required Class="mb-1" OnBlur="CalculateSumPercentOfSavings" />
+            </MudItem>
+            <MudItem xs="4" md="4">
+                <MudTextField @bind-Value="RSFRShare" Label="Share" Type="Numeric" Required Class="mb-1" OnBlur="CalculateSumPercentOfSavings" />
+            </MudItem>
+        </MudGrid>
+
+        <!-- Subsection: Large Cap Mutual Funds -->
+        <MudText Typo="Typo.h6">Large Cap Mutual Funds</MudText>
+        <MudGrid>
+            <MudItem xs="4" md="4">
+                <MudTextField @bind-Value="RSLCMFReturns" Label="Returns" Type="Numeric" Required Class="mb-1" OnBlur="CalculateSumPercentOfSavings" />
+            </MudItem>
+            <MudItem xs="4" md="4">
+                <MudTextField @bind-Value="RSLCMFTax" Label="Tax" Type="Numeric" Required Class="mb-1" OnBlur="CalculateSumPercentOfSavings" />
+            </MudItem>
+            <MudItem xs="4" md="4">
+                <MudTextField @bind-Value="RSLCMFShare" Label="Share" Type="Numeric" Required Class="mb-1" OnBlur="CalculateSumPercentOfSavings" />
+            </MudItem>
+        </MudGrid>
+
+        <!-- Subsection: Midcap Mutual Funds -->
+        <MudText Typo="Typo.h6">Midcap Mutual Funds</MudText>
+        <MudGrid>
+            <MudItem xs="4" md="4">
+                <MudTextField @bind-Value="RSMCMFReturns" Label="Returns" Type="Numeric" Required Class="mb-1" OnBlur="CalculateSumPercentOfSavings" />
+            </MudItem>
+            <MudItem xs="4" md="4">
+                <MudTextField @bind-Value="RSMCMFTax" Label="Tax" Type="Numeric" Required Class="mb-1" OnBlur="CalculateSumPercentOfSavings" />
+            </MudItem>
+            <MudItem xs="4" md="4">
+                <MudTextField @bind-Value="RSMCMFShare" Label="Share" Type="Numeric" Required Class="mb-1" OnBlur="CalculateSumPercentOfSavings" />
+            </MudItem>
+        </MudGrid>
+
+        <!-- Subsection: Smallcap Mutual Funds -->
+        <MudText Typo="Typo.h6">Smallcap Mutual Funds</MudText>
+        <MudGrid>
+            <MudItem xs="4" md="4">
+                <MudTextField @bind-Value="RSSCMFReturns" Label="Returns" Type="Numeric" Required Class="mb-1" OnBlur="CalculateSumPercentOfSavings" />
+            </MudItem>
+            <MudItem xs="4" md="4">
+                <MudTextField @bind-Value="RSSCMFTax" Label="Tax" Type="Numeric" Required Class="mb-1" OnBlur="CalculateSumPercentOfSavings" />
+            </MudItem>
+            <MudItem xs="4" md="4">
+                <MudTextField @bind-Value="RSSCMFShare" Label="Share" Type="Numeric" Required Class="mb-1" OnBlur="CalculateSumPercentOfSavings" />
+            </MudItem>
+        </MudGrid>
+
+        <!-- Calculated labels (d22, e22, f22) -->
+        <MudText Typo="Typo.h6">Calculated Values</MudText>
+        <MudGrid>
+            <MudItem xs="4" md="4">
+                <MudText title="Sum Of Returns Share">@ConvertToIndianNumberFormat(RSSumOfReturnsShare)%</MudText>
+            </MudItem>
+            <MudItem xs="4" md="4">
+                <MudText title="Sum Of Tax Share">@ConvertToIndianNumberFormat(RSSumOfTaxShare)%</MudText>
+            </MudItem>
+            <MudItem xs="4" md="4">
+                <MudText title="Sum Of Diversification">@ConvertToIndianNumberFormat(RSSumOfDiversification)%</MudText>
+            </MudItem>
+        </MudGrid>
+    </MudItem>
+
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" OnClick="CalculateRetirementPlan" Class="mt-2">Calculate</MudButton>
+    <!-- Results Table -->
+    <MudItem xs="12">
+        <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+            <MudTabPanel Text="Results">
+                <MudTable Dense="true" Items="_report" T="ReportRow">
+                    <HeaderContent>
+                        <MudTh>Age</MudTh>
+                        <MudTh>Starting Saving (₹)</MudTh>
+                        <MudTh>Planned Expenses (₹)</MudTh>
+                        <MudTh>Additional Expenses (₹)</MudTh>
+                        <MudTh>Additional Savings (₹)</MudTh>
+                        <MudTh>Ending Savings (₹)</MudTh>
+                        <MudTh>Status</MudTh>
+                        <MudTh>Retirement Year</MudTh>
+                        <MudTh>Warning</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Age">@context.Age</MudTd>
+                        <MudTd DataLabel="Starting Saving">₹@ConvertToIndianNumberFormat(context.StartingSaving)</MudTd>
+                        <MudTd DataLabel="Planned Expenses">₹@ConvertToIndianNumberFormat(context.PlannedExpenses)</MudTd>
+                        <MudTd DataLabel="Additional Expenses">₹@ConvertToIndianNumberFormat(context.AdditionalExpenses)</MudTd>
+                        <MudTd DataLabel="Additional Savings">₹@ConvertToIndianNumberFormat(context.AdditionalSavings)</MudTd>
+                        <MudTd DataLabel="Ending Savings">₹@ConvertToIndianNumberFormat(context.EndingSavings)</MudTd>
+                        <MudTd DataLabel="Status">@context.Status</MudTd>
+                        <MudTd DataLabel="Retirement Year">@context.RetirementYear</MudTd>
+                        <MudTd DataLabel="Warning">@context.Warning</MudTd>
+                    </RowTemplate>
+                    <NoRecordsContent>
+                        <MudTd colspan="9">
+                            No data available.
+                        </MudTd>
+                    </NoRecordsContent>
+                </MudTable>
+            </MudTabPanel>
+        </MudTabs>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private int CurrentAge = 25;
+    private int RetirementAge = 55;
+    private int ExpensesPlannedAge = 85;
+    private int? CurrentSavingsAmount = 0;
+    private int? CurrentMonthlyInvestments = 10000;
+    private int StepUp = 7;
+    private int? PostRetirementMonthlyAmount = 80000;
+    private int Inflation = 7;
+
+
+    private double? CSFRReturns = 7;
+    private double? CSFRTax = 30;
+    private double? CSFRShare = 0;
+
+    private double? CSLCMFReturns = 12;
+    private double? CSLCMFTax = 20;
+    private double? CSLCMFShare = 30;
+
+    private double? CSMCMFReturns = 15;
+    private double? CSMCMFTax = 20;
+    private double? CSMCMFShare = 40;
+
+    private double? CSSCMFReturns = 18;
+    private double? CSSCMFTax = 20;
+    private double? CSSCMFShare = 30;
+
+
+    private double? RSFRReturns = 7;
+    private double? RSFRTax = 30;
+    private double? RSFRShare = 0;
+
+    private double? RSLCMFReturns = 12;
+    private double? RSLCMFTax = 20;
+    private double? RSLCMFShare = 30;
+
+    private double? RSMCMFReturns = 15;
+    private double? RSMCMFTax = 20;
+    private double? RSMCMFShare = 40;
+
+    private double? RSSCMFReturns = 18;
+    private double? RSSCMFTax = 20;
+    private double? RSSCMFShare = 30;
+
+
+    private double? CSSumOfDiversification = 0;
+    private double? CSSumOfTaxShare = 0;
+    private double? CSSumOfReturnsShare = 0;
+
+    private double? RSSumOfDiversification = 0;
+    private double? RSSumOfTaxShare = 0;
+    private double? RSSumOfReturnsShare = 0;
+
+    private List<ReportRow> _report = new();
+
+    private class ReportRow
+    {
+        public int Age { get; set; }
+        public double StartingSaving { get; set; }
+        public double PlannedExpenses { get; set; }
+        public double AdditionalExpenses { get; set; }
+        public double AdditionalSavings { get; set; }
+        public double EndingSavings { get; set; }
+        public string Status { get; set; }
+        public double RetirementYear { get; set; }
+        public string Warning { get; set; }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        CalculateSumPercentOfSavings();
+    }
+
+    private void CalculateSumPercentOfSavings()
+    {
+        CSSumOfDiversification = CSFRShare + CSLCMFShare + CSMCMFShare + CSSCMFShare;
+        RSSumOfDiversification = RSFRShare + RSLCMFShare + RSMCMFShare + RSSCMFShare;
+
+        CSSumOfTaxShare = 0;
+        CSSumOfReturnsShare = 0;
+        RSSumOfTaxShare = 0;
+        RSSumOfReturnsShare = 0;
+        if (CSSumOfDiversification is not null && CSSumOfDiversification is not 0)
+        {
+            CSSumOfTaxShare = ((CSFRTax * CSFRShare) + (CSLCMFTax * CSLCMFShare) + (CSMCMFTax * CSMCMFShare) + (CSSCMFTax * CSSCMFShare)) / CSSumOfDiversification;
+            CSSumOfReturnsShare = ((CSFRReturns * CSFRShare) + (CSLCMFReturns * CSLCMFShare) + (CSMCMFReturns * CSMCMFShare) + (CSSCMFReturns * CSSCMFShare)) / CSSumOfDiversification;
+        }
+
+        if (RSSumOfDiversification is not null && RSSumOfDiversification is not 0)
+        {
+            RSSumOfTaxShare = ((RSFRTax * RSFRShare) + (RSLCMFTax * RSLCMFShare) + (RSMCMFTax * RSMCMFShare) + (RSSCMFTax * RSSCMFShare)) / RSSumOfDiversification;
+            RSSumOfReturnsShare = ((RSFRReturns * RSFRShare) + (RSLCMFReturns * RSLCMFShare) + (RSMCMFReturns * RSMCMFShare) + (RSSCMFReturns * RSSCMFShare)) / RSSumOfDiversification;
+        }
+    }
+
+    private void CalculateRetirementPlan()
+    {
+        // Clear the report list to start fresh
+        _report.Clear();
+
+        // Initialize the starting variables
+        int currentYear = CurrentAge;
+        double startingSaving = CurrentSavingsAmount ?? 0;
+        double additionalSavings = (CurrentMonthlyInvestments * 12) ?? 0;
+        double inflationFactor = 1 + (Inflation / 100.0);
+        double postRetirementExpenses = PostRetirementMonthlyAmount ?? 0;
+        bool isRetired = false;
+
+        // Loop through each year starting from CurrentAge up to ExpensesPlannedAge
+        for (int age = CurrentAge; age <= ExpensesPlannedAge; age++)
+        {
+            // Apply the step-up percentage for savings
+            if (age > CurrentAge)
+            {
+                additionalSavings += additionalSavings * (StepUp / 100.0);
+            }
+
+            // Calculate retirement expenses adjusted by inflation
+            if (age >= RetirementAge)
+            {
+                isRetired = true;
+                postRetirementExpenses *= inflationFactor;  // Adjust for inflation
+            }
+
+            // Calculate planned expenses for each year
+            double plannedExpenses = isRetired ? postRetirementExpenses * 12 : 0;  // Annual post-retirement expenses
+
+            additionalSavings = isRetired ? 0 : additionalSavings;
+
+
+            // Calculate returns on the current savings
+            double returnsOnSavings = startingSaving * (isRetired ? RSSumOfTaxShare.Value : RSSumOfReturnsShare.Value) / 100;
+
+            // Calculate ending savings: Starting savings + returns + additional savings - planned expenses
+            double endingSavings = startingSaving + returnsOnSavings + additionalSavings - plannedExpenses;
+
+            if (isRetired)
+            {
+                returnsOnSavings = startingSaving * (RSSumOfReturnsShare.Value / 100);
+                endingSavings = startingSaving + returnsOnSavings + additionalSavings - plannedExpenses;
+            }
+
+            // // Calculate ending savings for the year
+            // double endingSavings = startingSaving + additionalSavings - plannedExpenses;
+
+            // Handle cases where savings run out
+            string warning = null;
+            if (endingSavings < 0)
+            {
+                warning = "Warning: Savings depleted";
+                endingSavings = 0;
+            }
+
+            // Determine the status: "Earning" or "Retired"
+            string status = isRetired ? "Retired" : "Earning";
+
+            // Add the row to the report
+            _report.Add(new ReportRow
+                {
+                    Age = age,
+                    StartingSaving = startingSaving,
+                    PlannedExpenses = plannedExpenses,
+                    AdditionalExpenses = 0,  // Placeholder for additional expenses (if needed)
+                    AdditionalSavings = additionalSavings,
+                    EndingSavings = endingSavings,
+                    Status = status,
+                    RetirementYear = isRetired ? age : 0,
+                    Warning = warning
+                });
+
+            // Update starting savings for the next year
+            startingSaving = endingSavings;
+        }
+    }
+
+    private string ConvertToIndianNumberFormat(double? number)
+    {
+        if (number is not null)
+        {
+            return string.Format(new System.Globalization.CultureInfo("en-IN"), "{0:N2}", number);
+        }
+        return string.Format(new System.Globalization.CultureInfo("en-IN"), "{0:N2}", 0);
+    }
+}
+
+
+
+
+@* <MudGrid>
+    <!-- First Section -->
+    <MudItem xs="12" md="4">
+        <MudText Typo="Typo.h5">Retirement Planner</MudText>
+
+        <!-- Inputs with labels -->
+        <MudTextField @bind-Value="_b1" Label="A1" Type="Numeric" Required Class="mb-1" AutoFocus="true" />
+        <MudTextField @bind-Value="_b2" Label="A2" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="_b3" Label="A3" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="_b5" Label="A5" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="_b6" Label="A6" Type="Numeric" Required Class="mb-1" />
+    </MudItem>
+
+    <!-- Current Savings - Investment Approach Section -->
+    <MudItem xs="12" md="8">
+        <MudText Typo="Typo.h6">Current Savings - Investment Approach</MudText>
+
+        <!-- Subsection: Fixed Returns -->
+        <MudText Typo="Typo.h6">Fixed Returns</MudText>
+        <MudTextField @bind-Value="_b8" Label="B7" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="_c8" Label="C7" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="_d8" Label="D7" Type="Numeric" Required Class="mb-1" />
+
+        <!-- Subsection: Large Cap Mutual Funds -->
+        <MudText Typo="Typo.h6">Large Cap Mutual Funds</MudText>
+        <MudTextField @bind-Value="_b9" Label="B7" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="_c9" Label="C7" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="_d9" Label="D7" Type="Numeric" Required Class="mb-1" />
+
+        <!-- Subsection: Midcap Mutual Funds -->
+        <MudText Typo="Typo.h6">Midcap Mutual Funds</MudText>
+        <MudTextField @bind-Value="_b10" Label="B7" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="_c10" Label="C7" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="_d10" Label="D7" Type="Numeric" Required Class="mb-1" />
+
+        <!-- Subsection: Smallcap Mutual Funds -->
+        <MudText Typo="Typo.h6">Smallcap Mutual Funds</MudText>
+        <MudTextField @bind-Value="_b11" Label="B7" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="_c11" Label="C7" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="_d11" Label="D7" Type="Numeric" Required Class="mb-1" />
+
+        <!-- Calculated labels (d12, e12, f12) -->
+        <MudText Typo="Typo.h6">Calculated Values</MudText>
+        <MudText>₹@ConvertToIndianNumberFormat(_d12)</MudText>
+        <MudText>₹@ConvertToIndianNumberFormat(_e12)</MudText>
+        <MudText>₹@ConvertToIndianNumberFormat(_f12)</MudText>
+    </MudItem>
+
+    <!-- Step-up in Savings Section -->
+    <MudItem xs="12" md="4">
+        <MudText Typo="Typo.h6">Step-up in Savings Every Year</MudText>
+        <MudTextField @bind-Value="_b13" Label="Step-up" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="_b15" Label="A15" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="_b22" Label="A22" Type="Numeric" Required Class="mb-1" />
+    </MudItem>
+
+    <!-- Retirement Savings - Investment Approach Section -->
+    <MudItem xs="12" md="8">
+        <MudText Typo="Typo.h6">Retirement Savings - Investment Approach</MudText>
+
+        <!-- Subsection: Fixed Returns -->
+        <MudText Typo="Typo.h6">Fixed Returns</MudText>
+        <MudTextField @bind-Value="_b17" Label="B16" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="_c17" Label="C16" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="_d17" Label="D16" Type="Numeric" Required Class="mb-1" />
+
+        <!-- Subsection: Large Cap Mutual Funds -->
+        <MudText Typo="Typo.h6">Large Cap Mutual Funds</MudText>
+        <MudTextField @bind-Value="_b18" Label="B16" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="_c18" Label="C16" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="_d18" Label="D16" Type="Numeric" Required Class="mb-1" />
+
+        <!-- Subsection: Midcap Mutual Funds -->
+        <MudText Typo="Typo.h6">Midcap Mutual Funds</MudText>
+        <MudTextField @bind-Value="_b19" Label="B16" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="_c19" Label="C16" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="_d19" Label="D16" Type="Numeric" Required Class="mb-1" />
+
+        <!-- Subsection: Smallcap Mutual Funds -->
+        <MudText Typo="Typo.h6">Smallcap Mutual Funds</MudText>
+        <MudTextField @bind-Value="_b20" Label="B16" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="_c20" Label="C16" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="_d20" Label="D16" Type="Numeric" Required Class="mb-1" />
+
+        <!-- Calculated labels (d22, e22, f22) -->
+        <MudText Typo="Typo.h6">Calculated Values</MudText>
+        <MudText>₹@ConvertToIndianNumberFormat(_d22)</MudText>
+        <MudText>₹@ConvertToIndianNumberFormat(_e22)</MudText>
+        <MudText>₹@ConvertToIndianNumberFormat(_f22)</MudText>
+    </MudItem>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" OnClick="CalculateRetirementPlan" Class="mt-2">Calculate</MudButton>
+    <!-- Results Table -->
+    <MudItem xs="12">
+        <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+            <MudTabPanel Text="Results">
+                <MudTable Dense="true" Items="_report" T="ReportRow">
+                    <HeaderContent>
+                        <!-- Define table columns based on your Excel structure starting from line 24 -->
+                    </HeaderContent>
+                    <RowTemplate>
+                        <!-- Rows will be populated based on Excel formulas -->
+                    </RowTemplate>
+                    <NoRecordsContent>
+                        <MudTd colspan="9">
+                            No data available.
+                        </MudTd>
+                    </NoRecordsContent>
+                </MudTable>
+            </MudTabPanel>
+        </MudTabs>
+    </MudItem>
+</MudGrid>
+
+@code {
+    // Input variables
+    private double? _b1, _b2, _b3, _b5, _b6;
+    private double? _b8, _c8, _d8, _b9, _c9, _d9, _b10, _c10, _d10, _b11, _c11, _d11;
+    private double? _b13, _b15, _b22;
+    private double? _b17, _c17, _d17, _b18, _c18, _d18, _b19, _c19, _d19, _b20, _c20, _d20;
+
+    // Calculated variables based on Excel formulas
+    private double _d12, _e12, _f12;
+    private double _d22, _e22, _f22;
+
+    private List<ReportRow> _report = new();
+
+    private class ReportRow
+    {
+        public int Age { get; set; }
+        public double StartingSaving { get; set; }
+        public double PlannedExpenses { get; set; }
+        public double AdditionalExpenses { get; set; }
+        public double AdditionalSavings { get; set; }
+        public double EndingSavings { get; set; }
+        public string Status { get; set; }
+        public double RetirementYear { get; set; }
+        public string Warning { get; set; }
+    }
+
+    private void CalculateRetirementPlan()
+    {
+        // Add logic here based on Excel formulas
+        // You would compute the values for _d12, _e12, _f12, _d22, _e22, _f22 based on inputs
+        // Example logic for _d12:
+
+        _d12 = (_b8 ?? 0) + (_b9 ?? 0) + (_b10 ?? 0) + (_b11 ?? 0);
+        _e12 = (_c8 ?? 0) + (_c9 ?? 0) + (_c10 ?? 0) + (_c11 ?? 0);
+        _f12 = (_d8 ?? 0) + (_d9 ?? 0) + (_d10 ?? 0) + (_d11 ?? 0);
+
+        _d22 = (_b17 ?? 0) + (_b18 ?? 0) + (_b19 ?? 0) + (_b20 ?? 0);
+        _e22 = (_c17 ?? 0) + (_c18 ?? 0) + (_c19 ?? 0) + (_c20 ?? 0);
+        _f22 = (_d17 ?? 0) + (_d18 ?? 0) + (_d19 ?? 0) + (_d20 ?? 0);
+
+        // Logic for filling the report table would also be implemented here, based on your Excel formulas.
+    }
+
+    private string ConvertToIndianNumberFormat(double number)
+    {
+        return string.Format(new System.Globalization.CultureInfo("en-IN"), "{0:N2}", number);
+    }
+} *@
+
+
+
+@* <MudGrid>
+    <MudItem xs="12" md="4">
+        <MudTextField @bind-Value="_startingSaving" Label="Starting Saving (₹)" Type="Numeric" Required Class="mb-1" AutoFocus="true" />
+        <MudTextField @bind-Value="_plannedExpenses" Label="Planned Expenses (post-tax) (₹)" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="_additionalExpenses" Label="Additional Expenses (post-tax) (₹)" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="_additionalSavings" Label="Additional Savings (₹)" Type="Numeric" Required Class="mb-1" />
+
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" OnClick="CalculateRetirementPlan" Class="mt-2">Calculate</MudButton>
+    </MudItem>
+
+    <MudItem xs="12" md="8">
+        <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+            <MudTabPanel Text="Results">
+                <MudTable Dense="true" Items="_report" T="ReportRow">
+                    <HeaderContent>
+                        <MudTh>Age</MudTh>
+                        <MudTh>Starting Saving (₹)</MudTh>
+                        <MudTh>Planned Expenses (₹)</MudTh>
+                        <MudTh>Additional Expenses (₹)</MudTh>
+                        <MudTh>Additional Savings (₹)</MudTh>
+                        <MudTh>Ending Savings (₹)</MudTh>
+                        <MudTh>Status</MudTh>
+                        <MudTh>Retirement Year</MudTh>
+                        <MudTh>Warning</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Age">@context.Age</MudTd>
+                        <MudTd DataLabel="Starting Saving">₹@ConvertToIndianNumberFormat(context.StartingSaving)</MudTd>
+                        <MudTd DataLabel="Planned Expenses">₹@ConvertToIndianNumberFormat(context.PlannedExpenses)</MudTd>
+                        <MudTd DataLabel="Additional Expenses">₹@ConvertToIndianNumberFormat(context.AdditionalExpenses)</MudTd>
+                        <MudTd DataLabel="Additional Savings">₹@ConvertToIndianNumberFormat(context.AdditionalSavings)</MudTd>
+                        <MudTd DataLabel="Ending Savings">₹@ConvertToIndianNumberFormat(context.EndingSavings)</MudTd>
+                        <MudTd DataLabel="Status">@context.Status</MudTd>
+                        <MudTd DataLabel="Retirement Year">@context.RetirementYear</MudTd>
+                        <MudTd DataLabel="Warning">@context.Warning</MudTd>
+                    </RowTemplate>
+                    <NoRecordsContent>
+                        <MudTd colspan="9">
+                            No data available.
+                        </MudTd>
+                    </NoRecordsContent>
+                </MudTable>
+            </MudTabPanel>
+        </MudTabs>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private double? _startingSaving;
+    private double? _plannedExpenses;
+    private double? _additionalExpenses;
+    private double? _additionalSavings;
+    private List<ReportRow> _report = new();
+
+    private class ReportRow
+    {
+        public int Age { get; set; }
+        public double StartingSaving { get; set; }
+        public double PlannedExpenses { get; set; }
+        public double AdditionalExpenses { get; set; }
+        public double AdditionalSavings { get; set; }
+        public double EndingSavings { get; set; }
+        public string Status { get; set; }
+        public double? RetirementYear { get; set; }
+        public string Warning { get; set; }
+    }
+
+    private void CalculateRetirementPlan()
+    {
+        _report.Clear();
+
+        // Logic to process inputs and populate the report
+        // Assuming the logic is similar to the table from your Excel
+        // Example:
+        int currentAge = 34;
+        double endingSavings = _startingSaving ?? 0;
+
+        for (int i = 0; i < 30; i++) // Loop for 30 years or whatever is needed
+        {
+            double additionalSavings = _additionalSavings ?? 0;
+            double plannedExpenses = _plannedExpenses ?? 0;
+            double additionalExpenses = _additionalExpenses ?? 0;
+
+            endingSavings = endingSavings + additionalSavings - plannedExpenses - additionalExpenses;
+
+            _report.Add(new ReportRow
+                {
+                    Age = currentAge + i,
+                    StartingSaving = _startingSaving ?? 0,
+                    PlannedExpenses = plannedExpenses,
+                    AdditionalExpenses = additionalExpenses,
+                    AdditionalSavings = additionalSavings,
+                    EndingSavings = endingSavings,
+                    Status = "Earning",
+                    RetirementYear = i < 10 ? 0 : (double?)null, // Example
+                    Warning = endingSavings < 0 ? "Warning: Insufficient funds" : null
+                });
+
+            if (endingSavings <= 0) break;
+        }
+    }
+
+    private string ConvertToIndianNumberFormat(double number)
+    {
+        return string.Format(new System.Globalization.CultureInfo("en-IN"), "{0:N2}", number);
+    }
+}
+ *@
