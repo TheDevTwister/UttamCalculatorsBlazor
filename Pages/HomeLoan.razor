@@ -1,0 +1,130 @@
+﻿@page "/HomeLoanCalculator"
+
+<PageTitle>Home Loan Calculator</PageTitle>
+
+<h1 class="mb-5">Home Loan Calculator</h1>
+
+
+<MudGrid>
+    <MudItem xs="12" md="4">
+        <MudTextField @bind-Value="_loanAmount" Label="Loan Amount (₹)" Type="Numeric" Required Class="mb-1" AutoFocus="true" Margin="Margin.Dense" />
+        <MudTextField @bind-Value="_annualRate" Label="Annual Interest Rate (%)" Type="Numeric" Required Class="mb-1" Margin="Margin.Dense" />
+        <MudTextField @bind-Value="_tenure" Label="Loan Tenure (Years)" Type="Numeric" Required Class="mb-1" Margin="Margin.Dense" />
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" OnClick="CalculateEMI" Class="mt-2">Calculate</MudButton>
+    </MudItem>
+
+    <MudItem xs="12" md="8">
+        <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+            <MudTabPanel Text="Results">
+                <MudText>
+                    @((MarkupString)_resultHtml)
+                </MudText>
+            </MudTabPanel>
+            <MudTabPanel Text="Yearly Breakdown">
+                <MudTable Dense="true" Items="_report" T="ReportRow">
+                    <HeaderContent>
+                        <MudTh>Year</MudTh>
+                        <MudTh>Total Payment (₹)</MudTh>
+                        <MudTh>Principal Paid (₹)</MudTh>
+                        <MudTh>Interest Paid (₹)</MudTh>
+                        <MudTh>Remaining Balance (₹)</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Year">@context.Year</MudTd>
+                        <MudTd DataLabel="Total Payment">₹@ConvertToIndianNumberFormat(context.TotalPayment)</MudTd>
+                        <MudTd DataLabel="Principal Paid">₹@ConvertToIndianNumberFormat(context.PrincipalPaid)</MudTd>
+                        <MudTd DataLabel="Interest Paid">₹@ConvertToIndianNumberFormat(context.InterestPaid)</MudTd>
+                        <MudTd DataLabel="Remaining Balance">₹@ConvertToIndianNumberFormat(context.RemainingBalance)</MudTd>
+                    </RowTemplate>
+                    <NoRecordsContent>
+                        <MudTd colspan="5">No data available.</MudTd>
+                    </NoRecordsContent>
+                </MudTable>
+            </MudTabPanel>
+        </MudTabs>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private double? _loanAmount;
+    private double? _annualRate;
+    private int? _tenure;
+    private string _resultHtml;
+    private List<ReportRow> _report = new();
+
+    private class ReportRow
+    {
+        public int Year { get; set; }
+        public double TotalPayment { get; set; }
+        public double PrincipalPaid { get; set; }
+        public double InterestPaid { get; set; }
+        public double RemainingBalance { get; set; }
+    }
+
+    private void CalculateEMI()
+    {
+        if (_loanAmount == null || _annualRate == null || _tenure == null)
+        {
+            _resultHtml = "Please fill in all the required fields.";
+            return;
+        }
+
+        double P = _loanAmount.Value;
+        double annualRate = _annualRate.Value;
+        int years = _tenure.Value;
+        double r = (annualRate / 100) / 12; // Monthly interest rate
+        int n = years * 12; // Total number of months
+
+        // EMI formula
+        double emi = (P * r * Math.Pow(1 + r, n)) / (Math.Pow(1 + r, n) - 1);
+        double totalPayment = emi * n;
+        double totalInterest = totalPayment - P;
+
+        // Result HTML
+        _resultHtml = $@"
+            <b>EMI:</b> ₹{ConvertToIndianNumberFormat(emi)}<br>
+            <b>Total Payment (Principal + Interest):</b> ₹{ConvertToIndianNumberFormat(totalPayment)}<br>
+            <b>Total Interest Payable:</b> ₹{ConvertToIndianNumberFormat(totalInterest)}
+        ";
+
+        // Yearly breakdown
+        _report.Clear();
+        double remainingBalance = P;
+
+        for (int year = 1; year <= years; year++)
+        {
+            double totalYearlyPayment = 0;
+            double principalPaidYearly = 0;
+            double interestPaidYearly = 0;
+
+            for (int month = 1; month <= 12; month++)
+            {
+                if (remainingBalance <= 0) break; // Stop once the loan is paid off
+
+                double interest = remainingBalance * r;
+                double principal = emi - interest;
+
+                totalYearlyPayment += emi;
+                principalPaidYearly += principal;
+                interestPaidYearly += interest;
+
+                remainingBalance -= principal;
+            }
+
+            _report.Add(new ReportRow
+                {
+                    Year = year,
+                    TotalPayment = totalYearlyPayment,
+                    PrincipalPaid = principalPaidYearly,
+                    InterestPaid = interestPaidYearly,
+                    RemainingBalance = remainingBalance > 0 ? remainingBalance : 0
+                });
+        }
+    }
+
+    // Helper function to format numbers in the Indian numbering system
+    private string ConvertToIndianNumberFormat(double number)
+    {
+        return string.Format(new System.Globalization.CultureInfo("en-IN"), "{0:N2}", number);
+    }
+}

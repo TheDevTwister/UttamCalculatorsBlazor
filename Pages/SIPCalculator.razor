@@ -7,10 +7,10 @@
 
 <MudGrid>
     <MudItem xs="12" md="4">
-        <MudTextField @bind-Value="_sipAmount" Label="Monthly SIP Amount (₹)" Type="Numeric" Required Class="mb-1" AutoFocus="true" />
-        <MudTextField @bind-Value="_annualRate" Label="Annual Interest Rate (%)" Type="Numeric" Required Class="mb-1" />
-        <MudTextField @bind-Value="_duration" Label="Investment Duration (Years)" Type="Numeric" Required Class="mb-1" />
-        <MudTextField @bind-Value="_stepUp" Label="Annual Step-up (%)" Type="Numeric" Class="mb-1" />
+        <MudTextField @bind-Value="_sipAmount" Label="Monthly SIP Amount (₹)" Type="Numeric" Required Class="mb-1" AutoFocus="true" Margin="Margin.Dense" />
+        <MudTextField @bind-Value="_annualRate" Label="Annual Interest Rate (%)" Type="Numeric" Required Class="mb-1" Margin="Margin.Dense" />
+        <MudTextField @bind-Value="_duration" Label="Investment Duration (Years)" Type="Numeric" Required Class="mb-1" Margin="Margin.Dense" />
+        <MudTextField @bind-Value="_stepUp" Label="Annual Step-up (%)" Type="Numeric" Class="mb-1" Margin="Margin.Dense" />
         <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" OnClick="CalculateSIP" Class="mt-2">Calculate</MudButton>
     </MudItem>
 
