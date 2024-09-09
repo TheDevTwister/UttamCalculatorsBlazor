@@ -1,0 +1,138 @@
+﻿@page "/InflationCalculator"
+
+<PageTitle>Inflation Calculator</PageTitle>
+
+<h1 class="mb-5">Inflation Calculator</h1>
+
+
+<MudGrid>
+    <MudItem xs="12" md="4">
+        <MudTextField @bind-Value="_presentValue" Label="Present Amount (₹)" Type="Numeric" Required Class="mb-1" AutoFocus="true" Margin="Margin.Dense" />
+        <MudTextField @bind-Value="_inflationRate" Label="Inflation Rate (%)" Type="Numeric" Required Class="mb-1" Margin="Margin.Dense" />
+        <MudTextField @bind-Value="_timePeriod" Label="Time Period (Years)" Type="Numeric" Required Class="mb-1" Margin="Margin.Dense" />
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" OnClick="CalculateInflation" Class="mt-2">Calculate</MudButton>
+    </MudItem>
+
+    <MudItem xs="12" md="8">
+        <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+            <MudTabPanel Text="Results">
+                <MudText>
+                    @((MarkupString)_resultHtml)
+                </MudText>
+            </MudTabPanel>
+            <MudTabPanel Text="Yearly Breakdown">
+                <MudTable Dense="true" Items="_report" T="ReportRow">
+                    <HeaderContent>
+                        <MudTh>Year</MudTh>
+                        <MudTh>Value at End of Year (₹)</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Year">@context.Year</MudTd>
+                        <MudTd DataLabel="Value at End of Year">₹@ConvertToIndianNumberFormat(context.YearEndValue)</MudTd>
+                    </RowTemplate>
+                    <NoRecordsContent>
+                        <MudTd colspan="2">No data available.</MudTd>
+                    </NoRecordsContent>
+                </MudTable>
+            </MudTabPanel>
+            <MudTabPanel Text="Description">
+                <MudText>
+                    <div>
+                        <h2>Inflation Calculator</h2>
+                        <p>
+                            Inflation is the gradual increase in the prices of goods and services over time. As inflation rises,
+                            the purchasing power of your money decreases. This means that the same amount of money will buy you
+                            fewer goods and services in the future compared to today.
+                        </p>
+                        <p>
+                            By using this calculator, you can understand how the value of your money changes over a period of time
+                            due to inflation. The calculator helps answer questions like,
+                            <strong>"How much will ₹1,00,000 be worth in 10 years if the inflation rate is 5%?"</strong>
+                        </p>
+                        <br/>
+                        <h3>Example:</h3>
+                        <ul>
+                            <li>If you have ₹1,00,000 today and the inflation rate is 5%, after 10 years, your ₹1,00,000 will be worth much less in terms of purchasing power.</li>
+                            <li>The calculator will show the <strong>Future Value</strong> of your money, indicating how much you would need in the future to maintain the same purchasing power you have today.</li>
+                        </ul>
+                        <br />
+                        <h3>Results Breakdown:</h3>
+                        <ul>
+                            <li>
+                                <strong>Future Value:</strong> This is how much your money will be worth after the selected number
+                                of years, considering the inflation rate. It shows how much you would need in the future to buy
+                                what you can afford today with the present amount.
+                            </li>
+                            <li>
+                                <strong>Yearly Breakdown:</strong> This shows the value of your money at the end of each year,
+                                giving you a clear picture of how inflation gradually reduces your purchasing power.
+                            </li>
+                        </ul>
+                        <br />
+                        <h3>In simple terms:</h3>
+                        <p>
+                            <strong>Inflation</strong> eats away at the value of your money over time.
+                            This calculator shows you the future equivalent of your money in today’s terms, so you can plan better for your financial future.
+                        </p>
+                    </div>
+
+                </MudText>
+            </MudTabPanel>
+        </MudTabs>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private double? _presentValue;
+    private double? _inflationRate;
+    private int? _timePeriod;
+    private string _resultHtml;
+    private List<ReportRow> _report = new();
+
+    private class ReportRow
+    {
+        public int Year { get; set; }
+        public double YearEndValue { get; set; }
+    }
+
+    private void CalculateInflation()
+    {
+        if (_presentValue == null || _inflationRate == null || _timePeriod == null)
+        {
+            _resultHtml = "Please fill in all the required fields.";
+            return;
+        }
+
+        double pv = _presentValue.Value;
+        double inflationRate = _inflationRate.Value / 100; // Convert to decimal
+        int years = _timePeriod.Value;
+
+        // Calculate Future Value
+        double fv = pv * Math.Pow(1 + inflationRate, years);
+
+        _resultHtml = $@"
+            <b>Future Value:</b> ₹{ConvertToIndianNumberFormat(fv)}<br>
+            <b>Present Amount:</b> ₹{ConvertToIndianNumberFormat(pv)}<br>
+            <b>Inflation Rate:</b> {inflationRate * 100:N2}%<br>
+            <b>Time Period:</b> {years} years
+        ";
+
+        // Generate yearly breakdown
+        _report.Clear();
+        for (int year = 1; year <= years; year++)
+        {
+            double yearEndValue = pv * Math.Pow(1 + inflationRate, year);
+            _report.Add(new ReportRow
+                {
+                    Year = year,
+                    YearEndValue = yearEndValue
+                });
+        }
+    }
+
+    // Helper function to format numbers in the Indian numbering system
+    private string ConvertToIndianNumberFormat(double number)
+    {
+        return string.Format(new System.Globalization.CultureInfo("en-IN"), "{0:N2}", number);
+    }
+}

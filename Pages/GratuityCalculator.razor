@@ -1,0 +1,91 @@
+﻿@page "/GratuityCalculator"
+
+<PageTitle>Gratuity Calculator</PageTitle>
+
+<h1 class="mb-5">Gratuity Calculator</h1>
+
+
+<MudGrid>
+    <MudItem xs="12" md="4">
+        <MudTextField @bind-Value="_lastSalary" Label="Last Drawn Salary (Basic + DA) (₹)" Type="Numeric" Required Class="mb-1" AutoFocus="true" Margin="Margin.Dense" />
+        <MudTextField @bind-Value="_yearsOfService" Label="Years of Service" Type="Numeric" Required Class="mb-1" Margin="Margin.Dense" />
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" OnClick="CalculateGratuity" Class="mt-2">Calculate</MudButton>
+    </MudItem>
+
+    <MudItem xs="12" md="8">
+        <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+            <MudTabPanel Text="Results">
+                <MudText>
+                    @((MarkupString)_resultHtml)
+                </MudText>
+            </MudTabPanel>
+            <MudTabPanel Text="Yearly Breakdown">
+                <MudTable Dense="true" Items="_report" T="ReportRow">
+                    <HeaderContent>
+                        <MudTh>Year</MudTh>
+                        <MudTh>Gratuity for Year (₹)</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Year">@context.Year</MudTd>
+                        <MudTd DataLabel="Gratuity for Year">₹@ConvertToIndianNumberFormat(context.GratuityForYear)</MudTd>
+                    </RowTemplate>
+                    <NoRecordsContent>
+                        <MudTd colspan="2">No data available.</MudTd>
+                    </NoRecordsContent>
+                </MudTable>
+            </MudTabPanel>
+        </MudTabs>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private double? _lastSalary;
+    private int? _yearsOfService;
+    private string _resultHtml;
+    private List<ReportRow> _report = new();
+
+    private class ReportRow
+    {
+        public int Year { get; set; }
+        public double GratuityForYear { get; set; }
+    }
+
+    private void CalculateGratuity()
+    {
+        if (_lastSalary == null || _yearsOfService == null)
+        {
+            _resultHtml = "Please fill in all the required fields.";
+            return;
+        }
+
+        double lastSalary = _lastSalary.Value;
+        int years = _yearsOfService.Value;
+
+        // Calculate Gratuity
+        double gratuity = (lastSalary * years * 15) / 26;
+
+        _resultHtml = $@"
+            <b>Gratuity Amount:</b> ₹{ConvertToIndianNumberFormat(gratuity)}<br>
+            <b>Last Drawn Salary (Basic + DA):</b> ₹{ConvertToIndianNumberFormat(lastSalary)}<br>
+            <b>Years of Service:</b> {years} years
+        ";
+
+        // Generate yearly breakdown
+        _report.Clear();
+        for (int year = 1; year <= years; year++)
+        {
+            double gratuityForYear = (lastSalary * year * 15) / 26;
+            _report.Add(new ReportRow
+                {
+                    Year = year,
+                    GratuityForYear = gratuityForYear
+                });
+        }
+    }
+
+    // Helper function to format numbers in the Indian numbering system
+    private string ConvertToIndianNumberFormat(double number)
+    {
+        return string.Format(new System.Globalization.CultureInfo("en-IN"), "{0:N2}", number);
+    }
+}
