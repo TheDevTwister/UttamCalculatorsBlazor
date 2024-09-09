@@ -1,0 +1,97 @@
+﻿@page "/CAGRCalculator"
+
+<PageTitle>CAGR Calculator</PageTitle>
+
+<h1 class="mb-5">CAGR Calculator</h1>
+
+
+<MudGrid>
+    <MudItem xs="12" md="4">
+        <MudTextField @bind-Value="_initialValue" Label="Initial Investment (PV) (₹)" Type="Numeric" Required Class="mb-1" AutoFocus="true" Margin="Margin.Dense" />
+        <MudTextField @bind-Value="_finalValue" Label="Final Value (FV) (₹)" Type="Numeric" Required Class="mb-1" Margin="Margin.Dense" />
+        <MudTextField @bind-Value="_duration" Label="Investment Duration (Years)" Type="Numeric" Required Class="mb-1" Margin="Margin.Dense" />
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" OnClick="CalculateCAGR" Class="mt-2">Calculate</MudButton>
+    </MudItem>
+
+    <MudItem xs="12" md="8">
+        <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+            <MudTabPanel Text="Results">
+                <MudText>
+                    @((MarkupString)_resultHtml)
+                </MudText>
+            </MudTabPanel>
+            <MudTabPanel Text="Yearly Breakdown">
+                <MudTable Dense="true" Items="_report" T="ReportRow">
+                    <HeaderContent>
+                        <MudTh>Year</MudTh>
+                        <MudTh>Value at End of Year (₹)</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Year">@context.Year</MudTd>
+                        <MudTd DataLabel="Value at End of Year">₹@ConvertToIndianNumberFormat(context.YearEndValue)</MudTd>
+                    </RowTemplate>
+                    <NoRecordsContent>
+                        <MudTd colspan="2">No data available.</MudTd>
+                    </NoRecordsContent>
+                </MudTable>
+            </MudTabPanel>
+        </MudTabs>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private double? _initialValue;
+    private double? _finalValue;
+    private int? _duration;
+    private string _resultHtml;
+    private List<ReportRow> _report = new();
+
+    private class ReportRow
+    {
+        public int Year { get; set; }
+        public double YearEndValue { get; set; }
+    }
+
+    private void CalculateCAGR()
+    {
+        if (_initialValue == null || _finalValue == null || _duration == null)
+        {
+            _resultHtml = "Please fill in all the required fields.";
+            return;
+        }
+
+        double pv = _initialValue.Value;
+        double fv = _finalValue.Value;
+        int years = _duration.Value;
+
+        // Calculate CAGR
+        double cagr = Math.Pow(fv / pv, 1.0 / years) - 1;
+        double cagrPercent = cagr * 100;
+
+        // Display CAGR result
+        _resultHtml = $@"
+            <b>CAGR:</b> {cagrPercent:N2}%<br>
+            <b>Initial Investment (PV):</b> ₹{ConvertToIndianNumberFormat(pv)}<br>
+            <b>Final Value (FV):</b> ₹{ConvertToIndianNumberFormat(fv)}<br>
+            <b>Investment Duration:</b> {years} years
+        ";
+
+        // Generate yearly breakdown
+        _report.Clear();
+        for (int year = 1; year <= years; year++)
+        {
+            double yearEndValue = pv * Math.Pow(1 + cagr, year);
+            _report.Add(new ReportRow
+                {
+                    Year = year,
+                    YearEndValue = yearEndValue
+                });
+        }
+    }
+
+    // Helper function to format numbers in the Indian numbering system
+    private string ConvertToIndianNumberFormat(double number)
+    {
+        return string.Format(new System.Globalization.CultureInfo("en-IN"), "{0:N2}", number);
+    }
+}
