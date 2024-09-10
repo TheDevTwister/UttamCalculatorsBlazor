@@ -7,9 +7,10 @@
 <MudGrid>
     <MudItem xs="12" md="4">
         <MudTextField @bind-Value="_initialInvestment" Label="Initial Investment (₹)" Type="Numeric" Required Class="mb-1" AutoFocus="true" />
-        <MudTextField @bind-Value="_annualRate" Label="Annual Interest Rate (%)" Type="Numeric" Required Class="mb-1" />        
+        <MudTextField @bind-Value="_annualRate" Label="Annual Interest Rate (%)" Type="Numeric" Required Class="mb-1" />
         <MudTextField @bind-Value="_duration" Label="Investment Duration (Years)" Type="Numeric" Required Class="mb-1" />
         <MudTextField @bind-Value="_withdrawalAmount" Label="Monthly Withdrawal Amount (₹)" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="_yearlyStepUp" Label="Yearly Step-up (%)" Type="Numeric" Class="mb-1" />
 
         <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" OnClick="CalculateSWP" Class="mt-2">Calculate</MudButton>
     </MudItem>
@@ -59,6 +60,7 @@
     private double? _initialInvestment;
     private double? _annualRate;
     private double? _withdrawalAmount;
+    private double? _yearlyStepUp;
     private int? _duration;
     private string _resultHtml;
     private List<ReportRow> _report = new();
@@ -74,7 +76,7 @@
 
     private void CalculateSWP()
     {
-        if (_initialInvestment == null || _annualRate == null || _withdrawalAmount == null || _duration == null)
+        if (_initialInvestment == null || _annualRate == null || _withdrawalAmount == null || _duration == null || _yearlyStepUp == null)
         {
             _resultHtml = "Please fill in all required fields.";
             return;
@@ -83,6 +85,7 @@
         double initialInvestment = _initialInvestment.Value;
         double annualRate = _annualRate.Value;
         double monthlyWithdrawal = _withdrawalAmount.Value;
+        double stepUpRate = _yearlyStepUp.Value;
         int years = _duration.Value;
 
         double r = (annualRate / 100) / 12;
@@ -128,6 +131,9 @@
                 });
 
             if (currentBalance <= 0) break;
+
+            // Increase the withdrawal amount based on the step-up rate.
+            monthlyWithdrawal += monthlyWithdrawal * (stepUpRate / 100);
         }
 
         _resultHtml = currentBalance > 0
