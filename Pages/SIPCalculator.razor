@@ -21,6 +21,7 @@
                 <MudText>
                     @((MarkupString)_resultHtml)
                 </MudText>
+                <MudChart ChartType="ChartType.Donut" Width="300px" Height="300px" @bind-SelectedIndex="chartIndex" InputData="@chartdata" InputLabels="@chartlabels"></MudChart>
             </MudTabPanel>
             <MudTabPanel Text="Yearly Report">
                 <MudText>
@@ -45,12 +46,43 @@
                     </MudTable>
                 </MudText>
             </MudTabPanel>
+            <MudTabPanel Text="Description">
+                <MudText>
+                    <div>
+                        <h2>SIP Calculator – Systematic Investment Plan Calculator</h2>
+                        <p>
+                            Prospective investors can think that SIPs and mutual funds are the same. However, SIPs are merely a method of investing in mutual funds, the other method being a lump sum. A SIP calculator is a tool that helps you determine the returns you can avail when parking your funds in such investment tools. Systematic Investment Plan or SIP is a process of investing a fixed sum of money in mutual funds at regular intervals. SIPs usually allow you to invest weekly, quarterly, or monthly.
+                        </p>
+                        <br />
+                        <h3>What is a SIP Calculator?</h3>
+                        <p>
+                            A SIP calculator is a simple tool that allows individuals to get an idea of the returns on their mutual fund investments made through SIP. SIP investments in mutual funds have become one of the most popular investment options for millennials lately.
+                        </p>
+                        <br />
+                        <p>
+                            These mutual fund sip calculators are designed to give potential investors an estimate on their mutual fund investments. However, the actual returns offered by a mutual fund scheme varies depending on various factors. The SIP calculator does not provide clarification for the exit load and expense ratio (if any).
+                        </p>
+                        <br />
+                        <p>
+                            This calculator will calculate the wealth gain and expected returns for your monthly SIP investment. Indeed, you get a rough estimate on the maturity amount for any of your monthly SIP, based on a projected annual return rate.
+                        </p>
+                    </div>
+                </MudText>
+            </MudTabPanel>
         </MudTabs>
     </MudItem>
 </MudGrid>
 
 
 @code {
+
+    private int chartIndex = -1; //default value cannot be 0 -> first selectedindex is 0.
+    public double[] chartdata = null;
+    public string[] chartlabels = { "Deposit","Estimated Returns" };
+
+
+
+
     private double? _sipAmount;
     private double? _annualRate;
     private int? _duration;
@@ -106,6 +138,8 @@
 
             monthlySIP += (monthlySIP * (stepUp / 100));
         }
+
+        chartdata = new double[] { totalDeposit,(maturityAmount - totalDeposit) };
 
         _resultHtml = $@"
             <b>Maturity Amount:</b> ₹{ConvertToIndianNumberFormat(maturityAmount)}<br>
