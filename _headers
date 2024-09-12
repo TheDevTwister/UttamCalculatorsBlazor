@@ -1,0 +1,11 @@
+﻿/_framework/* 
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/css/*
+  Cache-Control: max-age=31536000, immutable
+
+/js/*
+  Cache-Control: max-age=31536000, immutable
+
+/index.html
+  Cache-Control: no-cache, no-store, must-revalidate
