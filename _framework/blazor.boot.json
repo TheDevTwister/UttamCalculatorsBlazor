@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "UttamCalculatorsBlazor",
   "resources": {
-    "hash": "sha256-Fw+jZiGLMI+DccoDD2ov3ZtG5oT6LYRMOmfjscboMvk=",
+    "hash": "sha256-wqDrJKfDyWvboaeuwLFAgDzM4pWj4YIDIlanL5lbawM=",
     "jsModuleNative": {
       "dotnet.native.8.0.8.yukicuoxyv.js": "sha256-mG5JRjF2O0X2urdV/5vOyeOF5uE8YFWo5Jmj1JqZVPY="
     },
@@ -59,7 +59,7 @@
       "System.Text.Json.wasm": "sha256-VWIDaJg5SbhBKno72odZ4uOzNwdhmZmEQKbKdwGKL58=",
       "System.Text.RegularExpressions.wasm": "sha256-6VX7tjp87G4VeXb4Hwj8Yq5VH1ZaFr6Ra0z4EWqPvoQ=",
       "System.wasm": "sha256-ka1SPMSVGn53xDzeBa40FQCsprKEF+n+wpvvd1HyMNE=",
-      "UttamCalculatorsBlazor.wasm": "sha256-5tSemPkHtWQRtw5QBiQ3ctDQ9uKFM6LQN3YOONsKZeM="
+      "UttamCalculatorsBlazor.wasm": "sha256-Qn7E/2Dmy2+3IXVyzxSB59sYHGuJ5PvwwxbgZHc2VaE="
     }
   },
   "cacheBootResources": true,

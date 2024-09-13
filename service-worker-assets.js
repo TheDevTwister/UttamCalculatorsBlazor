@@ -37,7 +37,7 @@
       "url": "icon-512.png"
     },
     {
-      "hash": "sha256-te0q\/edYAHvPCkSTzAie0GScWNxXAB+W1PyANZ3qX4I=",
+      "hash": "sha256-dnP58hP97ROOAD2l\/ppAaGWc+E5RH2XqY63Mzv4izIk=",
       "url": "index.html"
     },
     {
@@ -57,7 +57,7 @@
       "url": "sample-data\/weather.json"
     },
     {
-      "hash": "sha256-pFm4ETTb0QmHPZ2Fwh4ZDsayU+\/98JWtYQD2ckz3gGY=",
+      "hash": "sha256-DEa9h\/61C8vpfp8tZeHSw13AAacQSJ8Oep3sLhvJqx0=",
       "url": "sitemap.xml"
     },
     {
@@ -85,7 +85,7 @@
       "url": "_framework\/icudt_no_CJK.dat"
     },
     {
-      "hash": "sha256-pxOsz35\/LpFGJUhjbT8YIXnbAhO2EC1wZec0L1Hewo8=",
+      "hash": "sha256-AI1kDeuP8LJHae\/5mgoYCmiiQFGIOciDk+vidVod0uQ=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -265,7 +265,7 @@
       "url": "_framework\/System.wasm"
     },
     {
-      "hash": "sha256-5tSemPkHtWQRtw5QBiQ3ctDQ9uKFM6LQN3YOONsKZeM=",
+      "hash": "sha256-Qn7E\/2Dmy2+3IXVyzxSB59sYHGuJ5PvwwxbgZHc2VaE=",
       "url": "_framework\/UttamCalculatorsBlazor.wasm"
     },
     {
@@ -281,5 +281,5 @@
       "url": "_content\/MudBlazor\/MudBlazor.min.js"
     }
   ],
-  "version": "osbg9bQZ"
+  "version": "ZQiCzfUq"
 };
