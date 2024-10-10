@@ -6,10 +6,10 @@
 
 <MudGrid>
     <MudItem xs="12" md="4">
-        <MudTextField @bind-Value="_initialInvestment" Label="Initial Investment (₹)" Type="Numeric" Required Class="mb-1" AutoFocus="true" />
+        <MudTextField @bind-Value="_initialInvestment" Label="Initial Investment" Type="Numeric" Required Class="mb-1" AutoFocus="true" />
         <MudTextField @bind-Value="_annualRate" Label="Annual Interest Rate (%)" Type="Numeric" Required Class="mb-1" />
         <MudTextField @bind-Value="_duration" Label="Investment Duration (Years)" Type="Numeric" Required Class="mb-1" />
-        <MudTextField @bind-Value="_withdrawalAmount" Label="Monthly Withdrawal Amount (₹)" Type="Numeric" Required Class="mb-1" />
+        <MudTextField @bind-Value="_withdrawalAmount" Label="Monthly Withdrawal Amount" Type="Numeric" Required Class="mb-1" />
         <MudTextField @bind-Value="_yearlyStepUp" Label="Yearly Step-up (%)" Type="Numeric" Class="mb-1" />
 
         <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" OnClick="CalculateSWP" Class="mt-2">Calculate</MudButton>
@@ -28,17 +28,17 @@
                     <MudTable Dense="true" Items="_report" T="ReportRow">
                         <HeaderContent>
                             <MudTh>Year</MudTh>
-                            <MudTh>Start Balance (₹)</MudTh>
-                            <MudTh>Total Withdrawals (₹)</MudTh>
-                            <MudTh>Interest Earned (₹)</MudTh>
-                            <MudTh>End of Year Balance (₹)</MudTh>
+                            <MudTh>Start Balance</MudTh>
+                            <MudTh>Total Withdrawals</MudTh>
+                            <MudTh>Interest Earned</MudTh>
+                            <MudTh>End of Year Balance</MudTh>
                         </HeaderContent>
                         <RowTemplate>
                             <MudTd DataLabel="Year">@context.Year</MudTd>
-                            <MudTd DataLabel="Start Balance">₹@ConvertToIndianNumberFormat(context.StartBalance)</MudTd>
-                            <MudTd DataLabel="Total Withdrawals">₹@ConvertToIndianNumberFormat(context.TotalWithdrawals)</MudTd>
-                            <MudTd DataLabel="Interest Earned">₹@ConvertToIndianNumberFormat(context.InterestEarned)</MudTd>
-                            <MudTd DataLabel="End of Year Balance">₹@ConvertToIndianNumberFormat(context.EndBalance)</MudTd>
+                            <MudTd DataLabel="Start Balance">@currencyService.ConvertToCurrencyFormat(context.StartBalance)</MudTd>
+                            <MudTd DataLabel="Total Withdrawals">@currencyService.ConvertToCurrencyFormat(context.TotalWithdrawals)</MudTd>
+                            <MudTd DataLabel="Interest Earned">@currencyService.ConvertToCurrencyFormat(context.InterestEarned)</MudTd>
+                            <MudTd DataLabel="End of Year Balance">@currencyService.ConvertToCurrencyFormat(context.EndBalance)</MudTd>
                         </RowTemplate>
                         <NoRecordsContent>
                             <MudTd colspan="5">
@@ -137,13 +137,8 @@
         }
 
         _resultHtml = currentBalance > 0
-            ? $"Your investment will last {years} years.<br>Ending Balance: ₹{ConvertToIndianNumberFormat(currentBalance)}<br>Total Withdrawals: ₹{ConvertToIndianNumberFormat(totalWithdrawals)}"
-            : $"Your investment will be depleted in {_report.Count} years.<br>Total Withdrawals: ₹{ConvertToIndianNumberFormat(totalWithdrawals)}";
+            ? $"Your investment will last {years} years.<br>Ending Balance: {currencyService.ConvertToCurrencyFormat(currentBalance)}<br>Total Withdrawals: {currencyService.ConvertToCurrencyFormat(totalWithdrawals)}"
+            : $"Your investment will be depleted in {_report.Count} years.<br>Total Withdrawals: {currencyService.ConvertToCurrencyFormat(totalWithdrawals)}";
     }
 
-    // Helper function to format numbers in the Indian numbering system
-    private string ConvertToIndianNumberFormat(double number)
-    {
-        return string.Format(new System.Globalization.CultureInfo("en-IN"), "{0:N2}", number);
-    }
 }

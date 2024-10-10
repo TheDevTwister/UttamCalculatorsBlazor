@@ -6,13 +6,13 @@
 
 <MudGrid>
     <MudItem xs="12" md="4">
-        <MudTextField @bind-Value="_ctc" Label="CTC (₹)" Type="Numeric" Required Class="mb-1" AutoFocus="true" Margin="Margin.Dense" />
-        <MudTextField @bind-Value="_basicSalary" Label="Basic Salary (₹)" Type="Numeric" Required Class="mb-1" Margin="Margin.Dense" />
-        <MudTextField @bind-Value="_hra" Label="HRA (₹)" Type="Numeric" Required Class="mb-1" Margin="Margin.Dense" />
-        <MudTextField @bind-Value="_specialAllowances" Label="Special Allowances (₹)" Type="Numeric" Required Class="mb-1" Margin="Margin.Dense" />
-        <MudTextField @bind-Value="_bonuses" Label="Bonuses (₹)" Type="Numeric" Class="mb-1" Margin="Margin.Dense" />
-        <MudTextField @bind-Value="_providentFund" Label="Provident Fund Deduction (₹)" Type="Numeric" Class="mb-1" Margin="Margin.Dense" />
-        <MudTextField @bind-Value="_professionalTax" Label="Professional Tax Deduction (₹)" Type="Numeric" Class="mb-1" Margin="Margin.Dense" />
+        <MudTextField @bind-Value="_ctc" Label="CTC" Type="Numeric" Required Class="mb-1" AutoFocus="true" Margin="Margin.Dense" />
+        <MudTextField @bind-Value="_basicSalary" Label="Basic Salary" Type="Numeric" Required Class="mb-1" Margin="Margin.Dense" />
+        <MudTextField @bind-Value="_hra" Label="HRA" Type="Numeric" Required Class="mb-1" Margin="Margin.Dense" />
+        <MudTextField @bind-Value="_specialAllowances" Label="Special Allowances" Type="Numeric" Required Class="mb-1" Margin="Margin.Dense" />
+        <MudTextField @bind-Value="_bonuses" Label="Bonuses" Type="Numeric" Class="mb-1" Margin="Margin.Dense" />
+        <MudTextField @bind-Value="_providentFund" Label="Provident Fund Deduction" Type="Numeric" Class="mb-1" Margin="Margin.Dense" />
+        <MudTextField @bind-Value="_professionalTax" Label="Professional Tax Deduction" Type="Numeric" Class="mb-1" Margin="Margin.Dense" />
         <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" OnClick="CalculateSalary" Class="mt-2">Calculate</MudButton>
     </MudItem>
 
@@ -55,16 +55,11 @@
         double netSalary = grossSalary - deductions;
 
         _resultHtml = $@"
-            <b>Gross Salary:</b> ₹{ConvertToIndianNumberFormat(grossSalary)}<br>
-            <b>Total Deductions:</b> ₹{ConvertToIndianNumberFormat(deductions)}<br>
-            <b>Net Monthly Salary:</b> ₹{ConvertToIndianNumberFormat(netSalary / 12)}<br>
-            <b>Net Annual Salary:</b> ₹{ConvertToIndianNumberFormat(netSalary)}
+            <b>Gross Salary:</b> {currencyService.ConvertToCurrencyFormat(grossSalary)}<br>
+            <b>Total Deductions:</b> {currencyService.ConvertToCurrencyFormat(deductions)}<br>
+            <b>Net Monthly Salary:</b> {currencyService.ConvertToCurrencyFormat(netSalary / 12)}<br>
+            <b>Net Annual Salary:</b> {currencyService.ConvertToCurrencyFormat(netSalary)}
         ";
     }
 
-    // Helper function to format numbers in the Indian numbering system
-    private string ConvertToIndianNumberFormat(double number)
-    {
-        return string.Format(new System.Globalization.CultureInfo("en-IN"), "{0:N2}", number);
-    }
 }
