@@ -7,8 +7,8 @@
 
 <MudGrid>
     <MudItem xs="12" md="4">
-        <MudTextField @bind-Value="_initialValue" Label="Initial Investment (PV) (₹)" Type="Numeric" Required Class="mb-1" AutoFocus="true" Margin="Margin.Dense" />
-        <MudTextField @bind-Value="_finalValue" Label="Final Value (FV) (₹)" Type="Numeric" Required Class="mb-1" Margin="Margin.Dense" />
+        <MudTextField @bind-Value="_initialValue" Label="Initial Investment (PV)" Type="Numeric" Required Class="mb-1" AutoFocus="true" Margin="Margin.Dense" />
+        <MudTextField @bind-Value="_finalValue" Label="Final Value (FV)" Type="Numeric" Required Class="mb-1" Margin="Margin.Dense" />
         <MudTextField @bind-Value="_duration" Label="Investment Duration (Years)" Type="Numeric" Required Class="mb-1" Margin="Margin.Dense" />
         <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" OnClick="CalculateCAGR" Class="mt-2">Calculate</MudButton>
     </MudItem>
@@ -24,11 +24,11 @@
                 <MudTable Dense="true" Items="_report" T="ReportRow">
                     <HeaderContent>
                         <MudTh>Year</MudTh>
-                        <MudTh>Value at End of Year (₹)</MudTh>
+                        <MudTh>Value at End of Year</MudTh>
                     </HeaderContent>
                     <RowTemplate>
                         <MudTd DataLabel="Year">@context.Year</MudTd>
-                        <MudTd DataLabel="Value at End of Year">₹@ConvertToIndianNumberFormat(context.YearEndValue)</MudTd>
+                        <MudTd DataLabel="Value at End of Year">@currencyService.ConvertToCurrencyFormat(context.YearEndValue)</MudTd>
                     </RowTemplate>
                     <NoRecordsContent>
                         <MudTd colspan="2">No data available.</MudTd>
@@ -52,7 +52,7 @@
         public double YearEndValue { get; set; }
     }
 
-    private void CalculateCAGR()
+    private async void CalculateCAGR()
     {
         if (_initialValue == null || _finalValue == null || _duration == null)
         {
@@ -71,8 +71,8 @@
         // Display CAGR result
         _resultHtml = $@"
             <b>CAGR:</b> {cagrPercent:N2}%<br>
-            <b>Initial Investment (PV):</b> ₹{ConvertToIndianNumberFormat(pv)}<br>
-            <b>Final Value (FV):</b> ₹{ConvertToIndianNumberFormat(fv)}<br>
+            <b>Initial Investment (PV):</b> {currencyService.ConvertToCurrencyFormat(pv)}<br>
+            <b>Final Value (FV):</b> {currencyService.ConvertToCurrencyFormat(fv)}<br>
             <b>Investment Duration:</b> {years} years
         ";
 
@@ -89,9 +89,4 @@
         }
     }
 
-    // Helper function to format numbers in the Indian numbering system
-    private string ConvertToIndianNumberFormat(double number)
-    {
-        return string.Format(new System.Globalization.CultureInfo("en-IN"), "{0:N2}", number);
-    }
 }

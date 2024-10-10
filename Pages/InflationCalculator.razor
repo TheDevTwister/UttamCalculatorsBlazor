@@ -7,7 +7,7 @@
 
 <MudGrid>
     <MudItem xs="12" md="4">
-        <MudTextField @bind-Value="_presentValue" Label="Present Amount (₹)" Type="Numeric" Required Class="mb-1" AutoFocus="true" Margin="Margin.Dense" />
+        <MudTextField @bind-Value="_presentValue" Label="Present Amount" Type="Numeric" Required Class="mb-1" AutoFocus="true" Margin="Margin.Dense" />
         <MudTextField @bind-Value="_inflationRate" Label="Inflation Rate (%)" Type="Numeric" Required Class="mb-1" Margin="Margin.Dense" />
         <MudTextField @bind-Value="_timePeriod" Label="Time Period (Years)" Type="Numeric" Required Class="mb-1" Margin="Margin.Dense" />
         <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" OnClick="CalculateInflation" Class="mt-2">Calculate</MudButton>
@@ -24,11 +24,11 @@
                 <MudTable Dense="true" Items="_report" T="ReportRow">
                     <HeaderContent>
                         <MudTh>Year</MudTh>
-                        <MudTh>Value at End of Year (₹)</MudTh>
+                        <MudTh>Value at End of Year</MudTh>
                     </HeaderContent>
                     <RowTemplate>
                         <MudTd DataLabel="Year">@context.Year</MudTd>
-                        <MudTd DataLabel="Value at End of Year">₹@ConvertToIndianNumberFormat(context.YearEndValue)</MudTd>
+                        <MudTd DataLabel="Value at End of Year">@currencyService.ConvertToCurrencyFormat(context.YearEndValue)</MudTd>
                     </RowTemplate>
                     <NoRecordsContent>
                         <MudTd colspan="2">No data available.</MudTd>
@@ -111,8 +111,8 @@
         double fv = pv * Math.Pow(1 + inflationRate, years);
 
         _resultHtml = $@"
-            <b>Future Value:</b> ₹{ConvertToIndianNumberFormat(fv)}<br>
-            <b>Present Amount:</b> ₹{ConvertToIndianNumberFormat(pv)}<br>
+            <b>Future Value:</b> {currencyService.ConvertToCurrencyFormat(fv)}<br>
+            <b>Present Amount:</b> {currencyService.ConvertToCurrencyFormat(pv)}<br>
             <b>Inflation Rate:</b> {inflationRate * 100:N2}%<br>
             <b>Time Period:</b> {years} years
         ";
@@ -130,9 +130,4 @@
         }
     }
 
-    // Helper function to format numbers in the Indian numbering system
-    private string ConvertToIndianNumberFormat(double number)
-    {
-        return string.Format(new System.Globalization.CultureInfo("en-IN"), "{0:N2}", number);
-    }
 }

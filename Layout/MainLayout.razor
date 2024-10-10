@@ -1,4 +1,5 @@
 ﻿@inherits LayoutComponentBase
+@inject ILocalStorageService localStorage
 
 @* Required *@
 <MudThemeProvider Theme="@_theme" IsDarkMode="_isDarkMode" />
@@ -14,8 +15,20 @@
         <a href="/" class="mud-toolbar mud-toolbar-appbar logo-link">
             <img src="/logo.png" class="logo-img" />
         </a>
-            @* <MudText Typo="Typo.h5" Class="ml-3">Application</MudText> *@
+        @* <MudText Typo="Typo.h5" Class="ml-3">Application</MudText> *@
         <MudSpacer />
+        <MudMenu ActivationEvent="MouseEvent.LeftClick" Color="Color.Primary">
+            <ActivatorContent>
+                <MudChip T="string" Icon="@Icons.Material.Filled.CurrencyExchange" Color="Color.Primary">@selectedCurrency</MudChip>
+            </ActivatorContent>
+            <ChildContent>
+                <MudMenuItem OnClick="@(async () => await SetCurrency(CurrencyCode.INR))">INR - Indian Rupee</MudMenuItem>
+                <MudMenuItem OnClick="@(async () => await SetCurrency(CurrencyCode.USD))">USD - US Dollar</MudMenuItem>
+                <MudMenuItem OnClick="@(async () => await SetCurrency(CurrencyCode.EUR))">EUR - Euro</MudMenuItem>
+                <MudMenuItem OnClick="@(async () => await SetCurrency(CurrencyCode.GBP))">GBP - British Pound</MudMenuItem>
+                <!-- Add more currencies as needed -->
+            </ChildContent>
+        </MudMenu>
         <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" />
         @* <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" /> *@
     </MudAppBar>
@@ -23,7 +36,7 @@
         <NavMenu />
     </MudDrawer>
     <MudMainContent Class="mt-16 pa-4">
-        @Body        
+        @Body
     </MudMainContent>
 </MudLayout>
 
@@ -31,10 +44,11 @@
     private bool _drawerOpen = true;
     private bool _isDarkMode = false;
     private MudTheme? _theme = null;
+    private CurrencyCode selectedCurrency;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
+        await base.OnInitializedAsync();
 
         _theme = new()
             {
@@ -42,8 +56,30 @@
                 PaletteDark = _darkPalette,
                 LayoutProperties = new LayoutProperties()
             };
+
+        await currencyService.InitializeAsync();
+        // Fetch the saved currency from local storage on initialization
+        var storedCurrency = await localStorage.GetItemAsync<string>("selectedCurrency");
+        if (!string.IsNullOrEmpty(storedCurrency) && Enum.TryParse<CurrencyCode>(storedCurrency, out var currency))
+        {
+            selectedCurrency = currency;
+        }
+        else
+        {
+            // Default to INR if nothing is found in local storage
+            selectedCurrency = CurrencyCode.INR;
+        }
     }
 
+    // General method to set currency and handle the change
+    private async Task SetCurrency(CurrencyCode currency)
+    {
+        selectedCurrency = currency;
+
+        await currencyService.SetCurrency(currency);
+        // Optionally, refresh or update any UI elements
+        StateHasChanged();
+    }
 
     private void DrawerToggle()
     {
@@ -105,7 +141,7 @@
 @* <MudLayout>
     <MudAppBar>
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-        
+
     </MudAppBar>
     <MudDrawer @bind-Open="@_drawerOpen">
         <NavMenu />

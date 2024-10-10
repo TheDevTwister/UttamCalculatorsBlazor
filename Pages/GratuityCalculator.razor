@@ -7,7 +7,7 @@
 
 <MudGrid>
     <MudItem xs="12" md="4">
-        <MudTextField @bind-Value="_lastSalary" Label="Last Drawn Salary (Basic + DA) (₹)" Type="Numeric" Required Class="mb-1" AutoFocus="true" Margin="Margin.Dense" />
+        <MudTextField @bind-Value="_lastSalary" Label="Last Drawn Salary (Basic + DA)" Type="Numeric" Required Class="mb-1" AutoFocus="true" Margin="Margin.Dense" />
         <MudTextField @bind-Value="_yearsOfService" Label="Years of Service" Type="Numeric" Required Class="mb-1" Margin="Margin.Dense" />
         <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" OnClick="CalculateGratuity" Class="mt-2">Calculate</MudButton>
     </MudItem>
@@ -23,11 +23,11 @@
                 <MudTable Dense="true" Items="_report" T="ReportRow">
                     <HeaderContent>
                         <MudTh>Year</MudTh>
-                        <MudTh>Gratuity for Year (₹)</MudTh>
+                        <MudTh>Gratuity for Year</MudTh>
                     </HeaderContent>
                     <RowTemplate>
                         <MudTd DataLabel="Year">@context.Year</MudTd>
-                        <MudTd DataLabel="Gratuity for Year">₹@ConvertToIndianNumberFormat(context.GratuityForYear)</MudTd>
+                        <MudTd DataLabel="Gratuity for Year">@currencyService.ConvertToCurrencyFormat(context.GratuityForYear)</MudTd>
                     </RowTemplate>
                     <NoRecordsContent>
                         <MudTd colspan="2">No data available.</MudTd>
@@ -65,8 +65,8 @@
         double gratuity = (lastSalary * years * 15) / 26;
 
         _resultHtml = $@"
-            <b>Gratuity Amount:</b> ₹{ConvertToIndianNumberFormat(gratuity)}<br>
-            <b>Last Drawn Salary (Basic + DA):</b> ₹{ConvertToIndianNumberFormat(lastSalary)}<br>
+            <b>Gratuity Amount:</b> {currencyService.ConvertToCurrencyFormat(gratuity)}<br>
+            <b>Last Drawn Salary (Basic + DA):</b> {currencyService.ConvertToCurrencyFormat(lastSalary)}<br>
             <b>Years of Service:</b> {years} years
         ";
 
@@ -83,9 +83,4 @@
         }
     }
 
-    // Helper function to format numbers in the Indian numbering system
-    private string ConvertToIndianNumberFormat(double number)
-    {
-        return string.Format(new System.Globalization.CultureInfo("en-IN"), "{0:N2}", number);
-    }
 }

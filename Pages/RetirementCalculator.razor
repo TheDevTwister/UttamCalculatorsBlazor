@@ -82,13 +82,13 @@
         <h4 class="mt-2">Calculated Sums</h4>
         <MudGrid>
             <MudItem xs="4" md="4">
-                <MudText title="Sum Of Returns Share">@ConvertToIndianNumberFormat(CSSumOfReturnsShare)%</MudText>
+                <MudText title="Sum Of Returns Share">@currencyService.ConvertToCurrencyFormat(CSSumOfReturnsShare, false)%</MudText>
             </MudItem>
             <MudItem xs="4" md="4">
-                <MudText title="Sum Of Tax Share">@ConvertToIndianNumberFormat(CSSumOfTaxShare)%</MudText>
+                <MudText title="Sum Of Tax Share">@currencyService.ConvertToCurrencyFormat(CSSumOfTaxShare, false)%</MudText>
             </MudItem>
             <MudItem xs="4" md="4">
-                <MudText title="Sum Of Diversification">@ConvertToIndianNumberFormat(CSSumOfDiversification)%</MudText>
+                <MudText title="Sum Of Diversification">@currencyService.ConvertToCurrencyFormat(CSSumOfDiversification, false)%</MudText>
             </MudItem>
         </MudGrid>
 
@@ -159,13 +159,13 @@
         <h4 class="mt-2">Calculated Sums</h4>
         <MudGrid>
             <MudItem xs="4" md="4">
-                <MudText title="Sum Of Returns Share">@ConvertToIndianNumberFormat(RSSumOfReturnsShare)%</MudText>
+                <MudText title="Sum Of Returns Share">@currencyService.ConvertToCurrencyFormat(RSSumOfReturnsShare,false)%</MudText>
             </MudItem>
             <MudItem xs="4" md="4">
-                <MudText title="Sum Of Tax Share">@ConvertToIndianNumberFormat(RSSumOfTaxShare)%</MudText>
+                <MudText title="Sum Of Tax Share">@currencyService.ConvertToCurrencyFormat(RSSumOfTaxShare, false)%</MudText>
             </MudItem>
             <MudItem xs="4" md="4">
-                <MudText title="Sum Of Diversification">@ConvertToIndianNumberFormat(RSSumOfDiversification)%</MudText>
+                <MudText title="Sum Of Diversification">@currencyService.ConvertToCurrencyFormat(RSSumOfDiversification, false)%</MudText>
             </MudItem>
         </MudGrid>
     </MudItem>
@@ -179,22 +179,22 @@
                 <MudTable Dense="true" Items="_report" T="ReportRow">
                     <HeaderContent>
                         <MudTh>Age</MudTh>
-                        <MudTh>Starting Saving (₹)</MudTh>
-                        <MudTh>Planned Expenses (₹)</MudTh>
-                        <MudTh>Additional Expenses (₹)</MudTh>
-                        <MudTh>Additional Savings (₹)</MudTh>
-                        <MudTh>Ending Savings (₹)</MudTh>
+                        <MudTh>Starting Saving</MudTh>
+                        <MudTh>Planned Expenses</MudTh>
+                        <MudTh>Additional Expenses</MudTh>
+                        <MudTh>Additional Savings</MudTh>
+                        <MudTh>Ending Savings</MudTh>
                         <MudTh>Status</MudTh>
                         <MudTh>Retirement Year</MudTh>
                         <MudTh>Warning</MudTh>
                     </HeaderContent>
                     <RowTemplate>
                         <MudTd DataLabel="Age">@context.Age</MudTd>
-                        <MudTd DataLabel="Starting Saving">₹@ConvertToIndianNumberFormat(context.StartingSaving)</MudTd>
-                        <MudTd DataLabel="Planned Expenses">₹@ConvertToIndianNumberFormat(context.PlannedExpenses)</MudTd>
-                        <MudTd DataLabel="Additional Expenses">₹@ConvertToIndianNumberFormat(context.AdditionalExpenses)</MudTd>
-                        <MudTd DataLabel="Additional Savings">₹@ConvertToIndianNumberFormat(context.AdditionalSavings)</MudTd>
-                        <MudTd DataLabel="Ending Savings">₹@ConvertToIndianNumberFormat(context.EndingSavings)</MudTd>
+                        <MudTd DataLabel="Starting Saving">@currencyService.ConvertToCurrencyFormat(context.StartingSaving)</MudTd>
+                        <MudTd DataLabel="Planned Expenses">@currencyService.ConvertToCurrencyFormat(context.PlannedExpenses)</MudTd>
+                        <MudTd DataLabel="Additional Expenses">@currencyService.ConvertToCurrencyFormat(context.AdditionalExpenses)</MudTd>
+                        <MudTd DataLabel="Additional Savings">@currencyService.ConvertToCurrencyFormat(context.AdditionalSavings)</MudTd>
+                        <MudTd DataLabel="Ending Savings">@currencyService.ConvertToCurrencyFormat(context.EndingSavings)</MudTd>
                         <MudTd DataLabel="Status">@context.Status</MudTd>
                         <MudTd DataLabel="Retirement Year">@context.RetirementYear</MudTd>
                         <MudTd DataLabel="Warning">@context.Warning</MudTd>
@@ -399,14 +399,5 @@
             // Update starting savings for the next year
             startingSaving = endingSavings;
         }
-    }
-
-    private string ConvertToIndianNumberFormat(double? number)
-    {
-        if (number is not null)
-        {
-            return string.Format(new System.Globalization.CultureInfo("en-IN"), "{0:N2}", number);
-        }
-        return string.Format(new System.Globalization.CultureInfo("en-IN"), "{0:N2}", 0);
     }
 }

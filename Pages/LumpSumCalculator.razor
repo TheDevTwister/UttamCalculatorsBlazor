@@ -6,7 +6,7 @@
 
 <MudGrid>
     <MudItem xs="12" md="4">
-        <MudTextField @bind-Value="_lumpSum" Label="Lump Sum Amount (₹)" Type="Numeric" Required Class="mb-1" AutoFocus="true" />
+        <MudTextField @bind-Value="_lumpSum" Label="Lump Sum Amount" Type="Numeric" Required Class="mb-1" AutoFocus="true" />
         <MudTextField @bind-Value="_annualRate" Label="Annual Interest Rate (%)" Type="Numeric" Required Class="mb-1" />
         <MudTextField @bind-Value="_duration" Label="Investment Duration (Years)" Type="Numeric" Required Class="mb-1" />
 
@@ -24,15 +24,15 @@
                 <MudTable Dense="true" Items="_report" T="ReportRow">
                     <HeaderContent>
                         <MudTh>Year</MudTh>
-                        <MudTh>Total Deposit (₹)</MudTh>
-                        <MudTh>Interest Earned (₹)</MudTh>
-                        <MudTh>End of Year Balance (₹)</MudTh>
+                        <MudTh>Total Deposit</MudTh>
+                        <MudTh>Interest Earned</MudTh>
+                        <MudTh>End of Year Balance</MudTh>
                     </HeaderContent>
                     <RowTemplate>
                         <MudTd DataLabel="Year">@context.Year</MudTd>
-                        <MudTd DataLabel="Total Deposit">₹@ConvertToIndianNumberFormat(context.TotalDeposit)</MudTd>
-                        <MudTd DataLabel="Interest Earned">₹@ConvertToIndianNumberFormat(context.InterestEarned)</MudTd>
-                        <MudTd DataLabel="End of Year Balance">₹@ConvertToIndianNumberFormat(context.EndOfYearBalance)</MudTd>
+                        <MudTd DataLabel="Total Deposit">@currencyService.ConvertToCurrencyFormat(context.TotalDeposit)</MudTd>
+                        <MudTd DataLabel="Interest Earned">@currencyService.ConvertToCurrencyFormat(context.InterestEarned)</MudTd>
+                        <MudTd DataLabel="End of Year Balance">@currencyService.ConvertToCurrencyFormat(context.EndOfYearBalance)</MudTd>
                     </RowTemplate>
                     <NoRecordsContent>
                         <MudTd colspan="4">
@@ -76,7 +76,7 @@
         double maturityAmount = lumpSum * Math.Pow(1 + r, years);
 
         _resultHtml = $@"
-            Maturity Amount: ₹{ConvertToIndianNumberFormat(maturityAmount)}<br>
+            Maturity Amount: {currencyService.ConvertToCurrencyFormat(maturityAmount)}<br>
         ";
 
         _report.Clear();
@@ -95,10 +95,5 @@
                 });
         }
     }
-
-    // Helper function to format numbers in the Indian numbering system
-    private string ConvertToIndianNumberFormat(double number)
-    {
-        return string.Format(new System.Globalization.CultureInfo("en-IN"), "{0:N2}", number);
-    }
+    
 }
