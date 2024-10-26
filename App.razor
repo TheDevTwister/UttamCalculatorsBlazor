@@ -10,29 +10,3 @@
         </LayoutView>
     </NotFound>
 </Router>
-
-@code {
-    [Inject] NavigationManager Navigation { get; set; }
-
-    private bool hasNavigated = false;
-
-    protected override void OnAfterRender(bool firstRender)
-    {
-        if (firstRender && !hasNavigated)
-        {
-            // Check if there is a hash in the URL
-            var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
-            if (!string.IsNullOrEmpty(uri.Fragment))
-            {
-                // Extract the fragment part (after '#')
-                var newPath = uri.Fragment.Substring(1); // Removes the '#'
-
-                // Ensure this logic is run only once
-                hasNavigated = true;
-
-                // Navigate to the correct route without the hash
-                Navigation.NavigateTo(newPath, true);
-            }
-        }
-    }
-}
