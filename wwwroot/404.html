@@ -2,10 +2,16 @@
 <head>
     <meta http-equiv="refresh" content="0; URL='/'" />
     <script>
-        debugger;
-        // Redirect to index.html with the correct path
-        var currentUrl = window.location.pathname + window.location.search;
-        window.location.replace('/#' + currentUrl);
+        // Get the current URL path
+        var currentPath = window.location.pathname + window.location.search;
+
+        // Redirect using the hash to let Blazor router handle the path
+        if (currentPath !== "/") {
+          window.location.replace("/#" + currentPath);
+        } else {
+          // If it's the root URL, just go back to index
+          window.location.replace("/");
+        }
     </script>
 </head>
 <body>
