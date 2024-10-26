@@ -10,3 +10,22 @@
         </LayoutView>
     </NotFound>
 </Router>
+
+@code {
+    [Inject] NavigationManager Navigation { get; set; }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Handle the hash in the URL if present
+            var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
+            if (!string.IsNullOrEmpty(uri.Fragment))
+            {
+                // Remove the leading '#' and navigate to the actual route
+                var newPath = uri.Fragment.Substring(1); // Removes the '#'
+                Navigation.NavigateTo(newPath, true);
+            }
+        }
+    }
+}
